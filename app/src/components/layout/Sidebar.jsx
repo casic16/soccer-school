@@ -2,10 +2,12 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../stores/authStore'
 
+
 const navItems = [
   { path: '/dashboard', label: 'dashboard.title', icon: '🏠' },
   { path: '/teams', label: 'dashboard.teams', icon: '👥' },
   { path: '/events', label: 'dashboard.upcoming_events', icon: '📅' },
+  { path: '/availability', label: 'dashboard.pending_availabilities', icon: '✅' },
 ]
 
 export default function Sidebar() {
