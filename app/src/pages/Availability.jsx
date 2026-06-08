@@ -56,6 +56,12 @@ export default function Availability() {
                 >
                   ✗ Absent
                 </button>
+                <button
+                 onClick={() => updateStatus(a.id, 'maybe')}
+                 className="px-3 py-1.5 bg-yellow-100 text-yellow-600 text-sm rounded-lg hover:bg-yellow-200 transition"
+                >
+                  ? Peut-être
+                </button>
               </div>
             </div>
           ))}
