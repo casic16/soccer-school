@@ -10,12 +10,13 @@
     "connecting": "جارٍ تسجيل الدخول..."
   },
   "dashboard": {
-    "hello": "مرحباً",
-    "role": "الدور",
-    "teams": "الفرق",
-    "upcoming_events": "الأحداث القادمة",
-    "pending_availabilities": "الحضور المعلق"
-  },
+  "hello": "مرحباً",
+  "role": "الدور",
+  "title": "لوحة التحكم",
+  "teams": "الفرق",
+  "upcoming_events": "الأحداث القادمة",
+  "pending_availabilities": "الحضور المعلق"
+},
   "roles": {
     "admin": "مدير",
     "coach": "مدرب",

@@ -10,12 +10,13 @@
     "connecting": "Signing in..."
   },
   "dashboard": {
-    "hello": "Hello",
-    "role": "Role",
-    "teams": "Teams",
-    "upcoming_events": "Upcoming events",
-    "pending_availabilities": "Pending availabilities"
-  },
+  "hello": "Hello",
+  "role": "Role",
+  "title": "Dashboard",
+  "teams": "Teams",
+  "upcoming_events": "Upcoming events",
+  "pending_availabilities": "Pending availabilities"
+},
   "roles": {
     "admin": "Admin",
     "coach": "Coach",

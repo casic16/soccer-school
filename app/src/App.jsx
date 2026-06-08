@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import Teams from './pages/Teams'
+import Events from './pages/Events'
+import AppLayout from './components/layout/AppLayout'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -22,11 +25,16 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={
+        <Route path="/" element={
           <PrivateRoute>
-            <Dashboard />
+            <AppLayout />
           </PrivateRoute>
-        }/>
+        }>
+          <Route index element={<Navigate to="/dashboard" />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="teams" element={<Teams />} />
+          <Route path="events" element={<Events />} />
+        </Route>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>

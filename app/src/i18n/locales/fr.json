@@ -9,13 +9,14 @@
     "password": "Mot de passe",
     "connecting": "Connexion..."
   },
-  "dashboard": {
-    "hello": "Bonjour",
-    "role": "Rôle",
-    "teams": "Équipes",
-    "upcoming_events": "Événements à venir",
-    "pending_availabilities": "Présences en attente"
-  },
+"dashboard": {
+  "hello": "Bonjour",
+  "role": "Rôle",
+  "title": "Tableau de bord",
+  "teams": "Équipes",
+  "upcoming_events": "Événements à venir",
+  "pending_availabilities": "Présences en attente"
+},
   "roles": {
     "admin": "Admin",
     "coach": "Coach",
