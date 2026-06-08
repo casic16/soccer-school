@@ -23,12 +23,18 @@
     "parent": "Parent",
     "player": "Player"
   },
+  "players": {
+  "title": "Players"
+},
   "common": {
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "add": "Add"
+    "add": "Add",
+    "no_events": "No upcoming events.",
+    "no_teams": "No teams found.",
+    "no_availability": "No pending availabilities."
   }
 }

@@ -8,6 +8,7 @@ const navItems = [
   { path: '/teams', label: 'dashboard.teams', icon: '👥' },
   { path: '/events', label: 'dashboard.upcoming_events', icon: '📅' },
   { path: '/availability', label: 'dashboard.pending_availabilities', icon: '✅' },
+  { path: '/players', label: 'players.title', icon: '⚽' },
 ]
 
 export default function Sidebar() {

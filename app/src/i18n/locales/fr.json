@@ -23,12 +23,18 @@
     "parent": "Parent",
     "player": "Joueur"
   },
+  "players": {
+  "title": "Joueurs"
+  },
   "common": {
     "loading": "Chargement...",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
     "edit": "Modifier",
-    "add": "Ajouter"
+    "add": "Ajouter",
+    "no_events": "Aucun événement à venir.",
+    "no_teams": "Aucune équipe.",
+    "no_availability": "Aucune présence en attente."
   }
 }
