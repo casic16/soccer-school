@@ -38,14 +38,15 @@ export const usePlayers = (teamId = null) => {
   }, [profile, teamId])
 
   const addPlayer = async (player) => {
-    const { data, error } = await supabase
-      .from('players')
-      .insert(player)
-      .select('*, teams(name, age_group)')
-      .single()
-    if (!error) setPlayers((prev) => [...prev, data])
-    return { data, error }
-  }
+  const { data: { session } } = await supabase.auth.getSession()
+  const { data, error } = await supabase
+    .from('players')
+    .insert({ ...player, user_id: session.user.id })
+    .select('*, teams(name, age_group)')
+    .single()
+  if (!error) setPlayers((prev) => [...prev, data])
+  return { data, error }
+}
 
   const deletePlayer = async (id) => {
     const { error } = await supabase.from('players').delete().eq('id', id)
