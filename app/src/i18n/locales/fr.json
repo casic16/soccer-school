@@ -1,0 +1,33 @@
+{
+  "app": {
+    "name": "Fariki"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "logout": "Déconnexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "connecting": "Connexion..."
+  },
+  "dashboard": {
+    "hello": "Bonjour",
+    "role": "Rôle",
+    "teams": "Équipes",
+    "upcoming_events": "Événements à venir",
+    "pending_availabilities": "Présences en attente"
+  },
+  "roles": {
+    "admin": "Admin",
+    "coach": "Coach",
+    "parent": "Parent",
+    "player": "Joueur"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter"
+  }
+}

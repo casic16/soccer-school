@@ -1,21 +1,33 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+
+const languages = [
+  { code: 'fr', label: 'FR' },
+  { code: 'en', label: 'EN' },
+  { code: 'ar', label: 'ع' },
+]
 
 export default function Login() {
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
+  const changeLanguage = (code) => {
+    i18n.changeLanguage(code)
+    document.documentElement.dir = code === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.lang = code
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
-
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-
     if (error) {
       setError(error.message)
       setLoading(false)
@@ -27,8 +39,24 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Soccer School</h1>
-        <p className="text-gray-500 mb-6">Connectez-vous à votre compte</p>
+        <div className="flex justify-end gap-1 mb-6">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => changeLanguage(lang.code)}
+              className={`px-2 py-1 text-xs rounded font-medium transition ${
+                i18n.language === lang.code
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {lang.label}
+            </button>
+          ))}
+        </div>
+
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">{t('app.name')}</h1>
+        <p className="text-gray-500 mb-6">{t('auth.login')}</p>
 
         {error && (
           <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg mb-4">
@@ -39,7 +67,7 @@ export default function Login() {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+              {t('auth.email')}
             </label>
             <input
               type="email"
@@ -52,7 +80,7 @@ export default function Login() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Mot de passe
+              {t('auth.password')}
             </label>
             <input
               type="password"
@@ -68,7 +96,7 @@ export default function Login() {
             disabled={loading}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-50"
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {loading ? t('auth.connecting') : t('auth.login')}
           </button>
         </form>
       </div>

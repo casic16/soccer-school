@@ -1,0 +1,33 @@
+{
+  "app": {
+    "name": " فريقي "
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "connecting": "جارٍ تسجيل الدخول..."
+  },
+  "dashboard": {
+    "hello": "مرحباً",
+    "role": "الدور",
+    "teams": "الفرق",
+    "upcoming_events": "الأحداث القادمة",
+    "pending_availabilities": "الحضور المعلق"
+  },
+  "roles": {
+    "admin": "مدير",
+    "coach": "مدرب",
+    "parent": "ولي الأمر",
+    "player": "لاعب"
+  },
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة"
+  }
+}

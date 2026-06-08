@@ -1,0 +1,33 @@
+{
+  "app": {
+    "name": "Fariki"
+  },
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "connecting": "Signing in..."
+  },
+  "dashboard": {
+    "hello": "Hello",
+    "role": "Role",
+    "teams": "Teams",
+    "upcoming_events": "Upcoming events",
+    "pending_availabilities": "Pending availabilities"
+  },
+  "roles": {
+    "admin": "Admin",
+    "coach": "Coach",
+    "parent": "Parent",
+    "player": "Player"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add"
+  }
+}

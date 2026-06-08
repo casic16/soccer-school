@@ -11,6 +11,11 @@ const fetchProfile = async (userId) => {
   return data
 }
 
+export const getDisplayName = (profile, language) => {
+  if (language === 'ar' && profile?.full_name_ar) return profile.full_name_ar
+  return profile?.full_name || ''
+}
+
 export const useAuthStore = create((set) => ({
   user: null,
   profile: null,
