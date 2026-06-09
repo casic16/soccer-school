@@ -28,6 +28,9 @@
   },
   "users": {
   "title": "Utilisateurs"
+  },
+  "notifications": {
+  "title": "Notifications"
 },
   "common": {
     "loading": "Chargement...",

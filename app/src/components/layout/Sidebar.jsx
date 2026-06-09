@@ -9,6 +9,7 @@ const allNavItems = [
   { path: '/players', label: 'players.title', icon: '⚽', roles: ['admin', 'coach'] },
   { path: '/availability', label: 'dashboard.pending_availabilities', icon: '✅', roles: ['admin', 'coach', 'parent', 'player'] },
   { path: '/users', label: 'users.title', icon: '🔑', roles: ['admin'] },
+  { path: '/notifications', label: 'notifications.title', icon: '🔔', roles: ['admin', 'coach', 'parent', 'player'] },
 ]
 
 export default function Sidebar() {

@@ -29,6 +29,9 @@
 "users": {
   "title": "المستخدمون"
 },
+"notifications": {
+  "title": "الإشعارات"
+},
   "common": {
     "loading": "جارٍ التحميل...",
     "save": "حفظ",

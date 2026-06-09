@@ -10,6 +10,7 @@ import Availability from './pages/Availability'
 import Players from './pages/Players'
 import TeamDetail from './pages/TeamDetail'
 import Users from './pages/Users'
+import Notifications from './pages/Notifications'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="availability" element={<Availability />} />
           <Route path="players" element={<Players />} />
           <Route path="users" element={<Users />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

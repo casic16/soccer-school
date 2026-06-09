@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore, getDisplayName } from '../../stores/authStore'
+import NotificationBell from '../notifications/NotificationBell'
 
 const languages = [
   { code: 'fr', label: 'FR' },
@@ -26,6 +27,7 @@ export default function AppLayout() {
         <header className="bg-white border-b border-gray-100 px-6 py-3 flex justify-between items-center">
           <div />
           <div className="flex items-center gap-4">
+            <NotificationBell />
             <div className="flex gap-1">
               {languages.map((lang) => (
                 <button

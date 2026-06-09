@@ -29,6 +29,9 @@
 "users": {
   "title": "Users"
 },
+"notifications": {
+  "title": "Notifications"
+},
   "common": {
     "loading": "Loading...",
     "save": "Save",
