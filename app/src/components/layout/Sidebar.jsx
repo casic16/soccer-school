@@ -2,13 +2,12 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../stores/authStore'
 
-
 const navItems = [
   { path: '/dashboard', label: 'dashboard.title', icon: '🏠' },
   { path: '/teams', label: 'dashboard.teams', icon: '👥' },
   { path: '/events', label: 'dashboard.upcoming_events', icon: '📅' },
-  { path: '/availability', label: 'dashboard.pending_availabilities', icon: '✅' },
   { path: '/players', label: 'players.title', icon: '⚽' },
+  { path: '/availability', label: 'dashboard.pending_availabilities', icon: '✅' },
 ]
 
 export default function Sidebar() {
@@ -18,7 +17,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-white border-r border-gray-100 min-h-screen flex flex-col">
       <div className="px-6 py-5 border-b border-gray-100">
-        <h1 className="text-lg font-bold text-green-600">Soccer School</h1>
+        <h1 className="text-lg font-bold text-green-600">Fariki</h1>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navItems.map((item) => (

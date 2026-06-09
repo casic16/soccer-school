@@ -26,5 +26,5 @@ export const useEvents = () => {
     fetchEvents()
   }, [profile])
 
-  return { events, loading }
+  return { events, loading, setEvents }
 }
