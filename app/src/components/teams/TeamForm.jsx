@@ -79,4 +79,18 @@ export default function TeamForm({ onClose, onCreated }) {
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-5">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 h
+          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+            {t('common.cancel')}
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={saving}
+            className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+          >
+            {saving ? 'Enregistrement...' : t('common.save')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
