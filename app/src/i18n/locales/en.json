@@ -26,6 +26,9 @@
   "players": {
   "title": "Players"
 },
+"users": {
+  "title": "Users"
+},
   "common": {
     "loading": "Loading...",
     "save": "Save",

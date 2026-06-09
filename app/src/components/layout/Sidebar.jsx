@@ -2,17 +2,20 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../stores/authStore'
 
-const navItems = [
-  { path: '/dashboard', label: 'dashboard.title', icon: '🏠' },
-  { path: '/teams', label: 'dashboard.teams', icon: '👥' },
-  { path: '/events', label: 'dashboard.upcoming_events', icon: '📅' },
-  { path: '/players', label: 'players.title', icon: '⚽' },
-  { path: '/availability', label: 'dashboard.pending_availabilities', icon: '✅' },
+const allNavItems = [
+  { path: '/dashboard', label: 'dashboard.title', icon: '🏠', roles: ['admin', 'coach', 'parent', 'player'] },
+  { path: '/teams', label: 'dashboard.teams', icon: '👥', roles: ['admin', 'coach'] },
+  { path: '/events', label: 'dashboard.upcoming_events', icon: '📅', roles: ['admin', 'coach', 'parent', 'player'] },
+  { path: '/players', label: 'players.title', icon: '⚽', roles: ['admin', 'coach'] },
+  { path: '/availability', label: 'dashboard.pending_availabilities', icon: '✅', roles: ['admin', 'coach', 'parent', 'player'] },
+  { path: '/users', label: 'users.title', icon: '🔑', roles: ['admin'] },
 ]
 
 export default function Sidebar() {
   const { t } = useTranslation()
-  const { signOut } = useAuthStore()
+  const { signOut, profile } = useAuthStore()
+
+  const navItems = allNavItems.filter(item => item.roles.includes(profile?.role))
 
   return (
     <aside className="w-64 bg-white border-r border-gray-100 min-h-screen flex flex-col">

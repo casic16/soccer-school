@@ -26,6 +26,9 @@
   "players": {
   "title": "Joueurs"
   },
+  "users": {
+  "title": "Utilisateurs"
+},
   "common": {
     "loading": "Chargement...",
     "save": "Enregistrer",

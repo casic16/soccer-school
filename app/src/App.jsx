@@ -9,6 +9,7 @@ import AppLayout from './components/layout/AppLayout'
 import Availability from './pages/Availability'
 import Players from './pages/Players'
 import TeamDetail from './pages/TeamDetail'
+import Users from './pages/Users'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="events" element={<Events />} />
           <Route path="availability" element={<Availability />} />
           <Route path="players" element={<Players />} />
+          <Route path="users" element={<Users />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
