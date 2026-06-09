@@ -20,8 +20,13 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-white border-r border-gray-100 min-h-screen flex flex-col">
       <div className="px-6 py-5 border-b border-gray-100">
-        <h1 className="text-lg font-bold text-green-600">Fariki</h1>
-      </div>
+    <h1
+      className="text-lg font-bold text-green-600 cursor-pointer"
+      onClick={() => window.location.reload()}
+    >
+    Fariki
+    </h1>
+    </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navItems.map((item) => (
           <NavLink
