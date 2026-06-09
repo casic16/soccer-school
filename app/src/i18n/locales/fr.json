@@ -32,6 +32,9 @@
   "notifications": {
   "title": "Notifications"
 },
+"stats": {
+  "title": "Statistiques"
+},
   "common": {
     "loading": "Chargement...",
     "save": "Enregistrer",

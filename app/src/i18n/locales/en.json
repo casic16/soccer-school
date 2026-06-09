@@ -32,6 +32,9 @@
 "notifications": {
   "title": "Notifications"
 },
+"stats": {
+  "title": "Statistics"
+}
   "common": {
     "loading": "Loading...",
     "save": "Save",

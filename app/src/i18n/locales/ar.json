@@ -32,6 +32,9 @@
 "notifications": {
   "title": "الإشعارات"
 },
+"stats": {
+  "title": "إحصائيات"
+}
   "common": {
     "loading": "جارٍ التحميل...",
     "save": "حفظ",
