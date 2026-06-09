@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { useNotifications } from '../hooks/useNotifications'
+import { useNotificationStore } from '../stores/notificationStore'
+import { useAuthStore } from '../stores/authStore'
 import { formatDistanceToNow } from 'date-fns'
 import { fr } from 'date-fns/locale'
 
 export default function Notifications() {
   const { t } = useTranslation()
-  const { notifications, loading, markAllRead, markRead, unreadCount } = useNotifications()
+  const { profile } = useAuthStore()
+  const { notifications, loading, markAllRead, markRead, unreadCount } = useNotificationStore()
 
   return (
     <div>
@@ -13,7 +15,7 @@ export default function Notifications() {
         <h2 className="text-2xl font-bold text-gray-800">Notifications</h2>
         {unreadCount > 0 && (
           <button
-            onClick={markAllRead}
+            onClick={() => markAllRead(profile?.id)}
             className="px-4 py-2 text-sm text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition"
           >
             Tout marquer lu

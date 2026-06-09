@@ -1,8 +1,10 @@
 import { Outlet } from 'react-router-dom'
+import { useEffect } from 'react'
 import Sidebar from './Sidebar'
+import NotificationBell from '../notifications/NotificationBell'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore, getDisplayName } from '../../stores/authStore'
-import NotificationBell from '../notifications/NotificationBell'
+import { useNotificationStore } from '../../stores/notificationStore'
 
 const languages = [
   { code: 'fr', label: 'FR' },
@@ -13,6 +15,11 @@ const languages = [
 export default function AppLayout() {
   const { profile } = useAuthStore()
   const { i18n } = useTranslation()
+  const { init } = useNotificationStore()
+
+  useEffect(() => {
+    if (profile?.id) init(profile.id)
+  }, [profile?.id])
 
   const changeLanguage = (code) => {
     i18n.changeLanguage(code)
@@ -54,4 +61,4 @@ export default function AppLayout() {
       </div>
     </div>
   )
-}clearInterval
+}

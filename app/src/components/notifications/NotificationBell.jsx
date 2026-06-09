@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { useNotifications } from '../../hooks/useNotifications'
+import { useNotificationStore } from '../../stores/notificationStore'
+import { useAuthStore } from '../../stores/authStore'
 import { formatDistanceToNow } from 'date-fns'
 import { fr } from 'date-fns/locale'
 
 export default function NotificationBell() {
-  const { notifications, unreadCount, markAllRead, markRead } = useNotifications()
+  const { profile } = useAuthStore()
+  const { notifications, unreadCount, markAllRead, markRead } = useNotificationStore()
   const [open, setOpen] = useState(false)
 
   return (
@@ -29,7 +31,7 @@ export default function NotificationBell() {
               <h3 className="font-bold text-gray-800 text-sm">Notifications</h3>
               {unreadCount > 0 && (
                 <button
-                  onClick={markAllRead}
+                  onClick={() => markAllRead(profile?.id)}
                   className="text-xs text-green-600 hover:text-green-700"
                 >
                   Tout marquer lu
