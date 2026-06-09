@@ -29,5 +29,5 @@ export const useTeams = () => {
     fetchTeams()
   }, [profile])
 
-  return { teams, loading }
+  return { teams, loading, setTeams }
 }

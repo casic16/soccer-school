@@ -8,6 +8,7 @@ import Events from './pages/Events'
 import AppLayout from './components/layout/AppLayout'
 import Availability from './pages/Availability'
 import Players from './pages/Players'
+import TeamDetail from './pages/TeamDetail'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -35,6 +36,7 @@ export default function App() {
           <Route index element={<Navigate to="/dashboard" />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="teams" element={<Teams />} />
+          <Route path="teams/:id" element={<TeamDetail />} />
           <Route path="events" element={<Events />} />
           <Route path="availability" element={<Availability />} />
           <Route path="players" element={<Players />} />
