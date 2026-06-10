@@ -11,6 +11,7 @@ const allNavItems = [
   { path: '/users', label: 'users.title', icon: '🔑', roles: ['admin'] },
   { path: '/notifications', label: 'notifications.title', icon: '🔔', roles: ['admin', 'coach', 'parent', 'player'] },
   { path: '/stats', label: 'stats.title', icon: '📊', roles: ['admin', 'coach'] },
+  { path: '/invitations', label: 'invitations.title', icon: '✉️', roles: ['admin'] },
 ]
 
 export default function Sidebar() {
