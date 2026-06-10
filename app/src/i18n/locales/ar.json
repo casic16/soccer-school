@@ -35,6 +35,9 @@
 "stats": {
   "title": "إحصائيات"
 },
+"invitations": {
+  "title": "الدعوات"
+},
   "common": {
     "loading": "جارٍ التحميل...",
     "save": "حفظ",

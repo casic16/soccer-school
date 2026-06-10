@@ -12,6 +12,8 @@ import TeamDetail from './pages/TeamDetail'
 import Users from './pages/Users'
 import Notifications from './pages/Notifications'
 import Stats from './pages/Stats'
+import Invitations from './pages/Invitations'
+import Register from './pages/Register'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -46,9 +48,12 @@ export default function App() {
           <Route path="users" element={<Users />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="stats" element={<Stats />} />
+          <Route path="invitations" element={<Invitations />} />
+        
         </Route>
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
     </BrowserRouter>
   )
 }

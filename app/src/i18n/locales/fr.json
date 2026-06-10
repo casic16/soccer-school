@@ -35,6 +35,9 @@
 "stats": {
   "title": "Statistiques"
 },
+"invitations": {
+  "title": "Invitations"
+},
   "common": {
     "loading": "Chargement...",
     "save": "Enregistrer",
