@@ -25,12 +25,22 @@ export default function Invitations() {
     setSaving(false)
   }
 
-  const copyLink = (token) => {
-    const link = `${window.location.origin}/register?token=${token}`
+const copyLink = (token) => {
+  const link = `${window.location.origin}/register?token=${token}`
+  try {
     navigator.clipboard.writeText(link)
-    setCopied(token)
-    setTimeout(() => setCopied(null), 2000)
+  } catch {
+    // Fallback
+    const el = document.createElement('textarea')
+    el.value = link
+    document.body.appendChild(el)
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
   }
+  setCopied(token)
+  setTimeout(() => setCopied(null), 2000)
+}
 
   return (
     <div>
