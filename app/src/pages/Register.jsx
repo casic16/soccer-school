@@ -22,12 +22,12 @@ export default function Register() {
       }
 
       const { data, error } = await supabase
-        .from('invitations')
-        .select('*')
-        .eq('token', token)
-        .is('accepted_at', null)
-        .gt('expires_at', new Date().toISOString())
-        .single()
+  .from('invitations')
+  .select('*')
+  .eq('token', token)
+  .is('accepted_at', null)
+  .gt('expires_at', new Date().toISOString())
+  .maybeSingle()
 
       if (error || !data) {
         setError('Invitation invalide ou expirée.')
