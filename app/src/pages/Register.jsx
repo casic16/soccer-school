@@ -52,19 +52,29 @@ export default function Register() {
     setSaving(true)
     setError(null)
 
-    const { data, error } = await supabase.functions.invoke('complete-registration', {
-      body: {
-        token,
-        full_name: form.full_name,
-        password: form.password,
-      },
-    })
+   const response = await fetch(
+  'https://wjfrniomfdtkiqohhlez.supabase.co/functions/v1/complete-registration',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify({
+      token,
+      full_name: form.full_name,
+      password: form.password,
+    }),
+  }
+)
 
-    if (error || data?.error) {
-      setError(data?.error || error.message)
-      setSaving(false)
-      return
-    }
+const data = await response.json()
+
+if (data?.error) {
+  setError(data.error)
+  setSaving(false)
+  return
+}
 
     const { error: loginError } = await supabase.auth.signInWithPassword({
       email: invitation.email,
