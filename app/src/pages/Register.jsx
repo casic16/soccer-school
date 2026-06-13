@@ -16,18 +16,18 @@ export default function Register() {
   useEffect(() => {
     const fetchInvitation = async () => {
       if (!token) {
-        setError('Lien d\'invitation invalide.')
+        setError("Lien d'invitation invalide.")
         setLoading(false)
         return
       }
 
       const { data, error } = await supabase
-  .from('invitations')
-  .select('*')
-  .eq('token', token)
-  .is('accepted_at', null)
-  .gt('expires_at', new Date().toISOString())
-  .maybeSingle()
+        .from('invitations')
+        .select('*')
+        .eq('token', token)
+        .is('accepted_at', null)
+        .gt('expires_at', new Date().toISOString())
+        .maybeSingle()
 
       if (error || !data) {
         setError('Invitation invalide ou expirée.')
@@ -41,80 +41,41 @@ export default function Register() {
   }, [token])
 
   const handleRegister = async () => {
-  if (!form.full_name || !form.password) {
-    setError('Veuillez remplir tous les champs.')
-    return
-  }
-  if (form.password.length < 6) {
-    setError('Le mot de passe doit contenir au moins 6 caractères.')
-    return
-  }
-  setSaving(true)
-  setError(null)
+    if (!form.full_name || !form.password) {
+      setError('Veuillez remplir tous les champs.')
+      return
+    }
+    if (form.password.length < 6) {
+      setError('Le mot de passe doit contenir au moins 6 caractères.')
+      return
+    }
+    setSaving(true)
+    setError(null)
 
-  const { data, error } = await supabase.functions.invoke('complete-registration', {
-    body: {
-      token,
-      full_name: form.full_name,
-      password: form.password,
-    },
-  })
+    const { data, error } = await supabase.functions.invoke('complete-registration', {
+      body: {
+        token,
+        full_name: form.full_name,
+        password: form.password,
+      },
+    })
 
-  if (error || data?.error) {
-    setError(data?.error || error.message)
-    setSaving(false)
-    return
-  }
+    if (error || data?.error) {
+      setError(data?.error || error.message)
+      setSaving(false)
+      return
+    }
 
-  // Connecter automatiquement après inscription
-  const { error: loginError } = await supabase.auth.signInWithPassword({
-    email: invitation.email,
-    password: form.password,
-  })
-
-  if (loginError) {
-    setError(loginError.message)
-    setSaving(false)
-    return
-  }
-
-  navigate('/dashboard')
-}
-
-    // 1. Créer le compte Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { error: loginError } = await supabase.auth.signInWithPassword({
       email: invitation.email,
       password: form.password,
     })
 
-    if (authError) {
-      setError(authError.message)
+    if (loginError) {
+      setError(loginError.message)
       setSaving(false)
       return
     }
-
-    // 2. Créer le profil utilisateur
-    const { error: profileError } = await supabase
-      .from('users')
-      .insert({
-        id: authData.user.id,
-        school_id: invitation.school_id,
-        full_name: form.full_name,
-        email: invitation.email,
-        role: invitation.role,
-      })
-
-    if (profileError) {
-      setError(profileError.message)
-      setSaving(false)
-      return
-    }
-
-    // 3. Marquer l'invitation comme acceptée
-    await supabase
-      .from('invitations')
-      .update({ accepted_at: new Date().toISOString() })
-      .eq('token', token)
 
     navigate('/dashboard')
   }
