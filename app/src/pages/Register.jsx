@@ -16,7 +16,7 @@ export default function Register() {
   useEffect(() => {
     const fetchInvitation = async () => {
       if (!token) {
-        setError("Lien d'invitation invalide.")
+        setError(`Lien d'invitation invalide.`)
         setLoading(false)
         return
       }
