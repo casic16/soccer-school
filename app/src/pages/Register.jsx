@@ -41,12 +41,45 @@ export default function Register() {
   }, [token])
 
   const handleRegister = async () => {
-    if (!form.full_name || !form.password) {
-      setError('Veuillez remplir tous les champs.')
-      return
-    }
-    setSaving(true)
-    setError(null)
+  if (!form.full_name || !form.password) {
+    setError('Veuillez remplir tous les champs.')
+    return
+  }
+  if (form.password.length < 6) {
+    setError('Le mot de passe doit contenir au moins 6 caractères.')
+    return
+  }
+  setSaving(true)
+  setError(null)
+
+  const { data, error } = await supabase.functions.invoke('complete-registration', {
+    body: {
+      token,
+      full_name: form.full_name,
+      password: form.password,
+    },
+  })
+
+  if (error || data?.error) {
+    setError(data?.error || error.message)
+    setSaving(false)
+    return
+  }
+
+  // Connecter automatiquement après inscription
+  const { error: loginError } = await supabase.auth.signInWithPassword({
+    email: invitation.email,
+    password: form.password,
+  })
+
+  if (loginError) {
+    setError(loginError.message)
+    setSaving(false)
+    return
+  }
+
+  navigate('/dashboard')
+}
 
     // 1. Créer le compte Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
