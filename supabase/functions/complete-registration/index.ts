@@ -1,16 +1,25 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 const supabaseAdmin = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 )
 
-serve(async (req) => {
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   try {
     const { token, full_name, password } = await req.json()
 
-    // 1. Vérifier l'invitation
+    console.log('Token reçu:', token)
+
     const { data: invitation, error: invError } = await supabaseAdmin
       .from('invitations')
       .select('*')
@@ -19,14 +28,15 @@ serve(async (req) => {
       .gt('expires_at', new Date().toISOString())
       .maybeSingle()
 
+    console.log('Invitation:', invitation, 'Error:', invError)
+
     if (invError || !invitation) {
       return new Response(
         JSON.stringify({ error: 'Invitation invalide ou expirée.' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // 2. Créer le compte Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email: invitation.email,
       password,
@@ -36,11 +46,10 @@ serve(async (req) => {
     if (authError) {
       return new Response(
         JSON.stringify({ error: authError.message }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // 3. Créer le profil utilisateur
     const { error: profileError } = await supabaseAdmin
       .from('users')
       .insert({
@@ -54,11 +63,10 @@ serve(async (req) => {
     if (profileError) {
       return new Response(
         JSON.stringify({ error: profileError.message }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // 4. Marquer l'invitation comme acceptée
     await supabaseAdmin
       .from('invitations')
       .update({ accepted_at: new Date().toISOString() })
@@ -66,13 +74,14 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 
-  } catch (error) {
+  } catch (err) {
+    console.error('Erreur:', err)
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 })
