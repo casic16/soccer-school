@@ -14,6 +14,8 @@ import Notifications from './pages/Notifications'
 import Stats from './pages/Stats'
 import Invitations from './pages/Invitations'
 import Register from './pages/Register'
+import RegisterSchool from './pages/public/RegisterSchool'
+import SuperAdmin from './pages/SuperAdmin'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -49,10 +51,13 @@ export default function App() {
           <Route path="notifications" element={<Notifications />} />
           <Route path="stats" element={<Stats />} />
           <Route path="invitations" element={<Invitations />} />
+          <Route path="/register-school" element={<RegisterSchool />} />
+          <Route path="super-admin" element={<SuperAdmin />} />
         
         </Route>
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/register-school" element={<RegisterSchool />} />
         </Routes>
     </BrowserRouter>
   )

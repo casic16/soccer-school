@@ -38,6 +38,9 @@
 "invitations": {
   "title": "الدعوات"
 },
+"superadmin": {
+  "title": "صلاحيات المسؤول الأعلى"
+},
   "common": {
     "loading": "جارٍ التحميل...",
     "save": "حفظ",

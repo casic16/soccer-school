@@ -38,6 +38,9 @@
 "invitations": {
   "title": "Invitations"
 },
+"superadmin": {
+  "title": "Super Admin"
+},
   "common": {
     "loading": "Loading...",
     "save": "Save",
