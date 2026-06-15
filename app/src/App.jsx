@@ -36,7 +36,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Routes publiques */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/register-school" element={<RegisterSchool />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        {/* Routes privées */}
         <Route path="/" element={
           <PrivateRoute>
             <AppLayout />
@@ -53,18 +60,11 @@ export default function App() {
           <Route path="notifications" element={<Notifications />} />
           <Route path="stats" element={<Stats />} />
           <Route path="invitations" element={<Invitations />} />
-          <Route path="/register-school" element={<RegisterSchool />} />
           <Route path="super-admin" element={<SuperAdmin />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-        
         </Route>
-          <Route path="/register" element={<Register />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-          <Route path="/register-school" element={<RegisterSchool />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />  
-        </Routes>
+
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     </BrowserRouter>
   )
 }
