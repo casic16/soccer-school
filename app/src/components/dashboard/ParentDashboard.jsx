@@ -3,72 +3,111 @@ import { useEvents } from '../../hooks/useEvents'
 import { useAvailabilities } from '../../hooks/useAvailabilities'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import Badge from '../ui/Badge'
-
-const typeColor = { match: 'blue', training: 'green', other: 'gray' }
-const typeLabel = { match: 'Match', training: 'Entraînement', other: 'Autre' }
-const statusColor = { confirmed: 'green', absent: 'red', pending: 'yellow', maybe: 'gray' }
-const statusLabel = { confirmed: 'Présent', absent: 'Absent', pending: 'En attente', maybe: 'Peut-être' }
+import { CardSkeleton, ListSkeleton } from '../ui/Skeleton'
+import EmptyState from '../ui/EmptyState'
 
 export default function ParentDashboard() {
   const { t } = useTranslation()
-  const { events } = useEvents()
-  const { availabilities, updateStatus } = useAvailabilities()
+  const { events, loading: eventsLoading } = useEvents()
+  const { availabilities, loading: availLoading, updateStatus } = useAvailabilities()
 
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <p className="text-sm text-gray-500">{t('dashboard.upcoming_events')}</p>
-          <p className="text-3xl font-bold text-green-600 mt-1">{events.length}</p>
-        </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <p className="text-sm text-gray-500">{t('dashboard.pending_availabilities')}</p>
-          <p className="text-3xl font-bold text-yellow-500 mt-1">{availabilities.length}</p>
-        </div>
+    <div className="space-y-8">
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-4">
+        {eventsLoading ? <CardSkeleton /> : (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-medium text-gray-500">{t('dashboard.upcoming_events')}</p>
+              <span className="text-2xl">📅</span>
+            </div>
+            <p className="text-3xl font-bold text-gray-900">{events.length}</p>
+          </div>
+        )}
+        {availLoading ? <CardSkeleton /> : (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-medium text-gray-500">{t('dashboard.pending_availabilities')}</p>
+              <span className="text-2xl">⏳</span>
+            </div>
+            <p className="text-3xl font-bold text-yellow-500">{availabilities.length}</p>
+          </div>
+        )}
       </div>
 
       {/* Présences à confirmer */}
       {availabilities.length > 0 && (
-        <>
-          <h3 className="text-lg font-bold text-gray-700 mb-3">À confirmer</h3>
-          <div className="space-y-3 mb-8">
+        <div>
+          <h3 className="text-base font-semibold text-gray-800 mb-4">À confirmer</h3>
+          <div className="space-y-3">
             {availabilities.map((a) => (
-              <div key={a.id} className="bg-white rounded-xl p-5 shadow-sm border border-yellow-200 flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium text-gray-800">{a.events?.title}</p>
-                  <p className="text-xs text-gray-400">
-                    {a.events?.start_at && format(new Date(a.events.start_at), 'dd MMM HH:mm', { locale: fr })}
-                  </p>
+              <div key={a.id} className="bg-white rounded-2xl p-5 shadow-sm border border-yellow-200 bg-yellow-50/30">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{a.events?.title}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {a.events?.start_at && format(new Date(a.events.start_at), 'dd MMM à HH:mm', { locale: fr })}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => updateStatus(a.id, 'confirmed')} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition">✓</button>
-                  <button onClick={() => updateStatus(a.id, 'maybe')} className="px-3 py-1.5 bg-yellow-100 text-yellow-600 text-sm rounded-lg hover:bg-yellow-200 transition">?</button>
-                  <button onClick={() => updateStatus(a.id, 'absent')} className="px-3 py-1.5 bg-red-100 text-red-600 text-sm rounded-lg hover:bg-red-200 transition">✗</button>
+                  <button
+                    onClick={() => updateStatus(a.id, 'confirmed')}
+                    className="flex-1 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition font-medium"
+                  >
+                    ✓ Présent
+                  </button>
+                  <button
+                    onClick={() => updateStatus(a.id, 'maybe')}
+                    className="flex-1 py-2 bg-yellow-100 text-yellow-700 text-sm rounded-xl hover:bg-yellow-200 transition font-medium"
+                  >
+                    ? Peut-être
+                  </button>
+                  <button
+                    onClick={() => updateStatus(a.id, 'absent')}
+                    className="flex-1 py-2 bg-red-100 text-red-600 text-sm rounded-xl hover:bg-red-200 transition font-medium"
+                  >
+                    ✗ Absent
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
 
-      {/* Prochains événements */}
-      <h3 className="text-lg font-bold text-gray-700 mb-3">{t('dashboard.upcoming_events')}</h3>
-      <div className="space-y-3">
-        {events.map((event) => (
-          <div key={event.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <Badge label={typeLabel[event.type]} color={typeColor[event.type]} />
-              <div>
-                <p className="text-sm font-medium text-gray-800">{event.title}</p>
-                <p className="text-xs text-gray-400">{event.location}</p>
+      {/* Calendrier */}
+      <div>
+        <h3 className="text-base font-semibold text-gray-800 mb-4">Calendrier</h3>
+        {eventsLoading ? <ListSkeleton rows={3} /> : events.length === 0 ? (
+          <EmptyState icon="📅" title="Aucun événement à venir" description="Les prochains matchs et entraînements apparaîtront ici." />
+        ) : (
+          <div className="space-y-2">
+            {events.map((event) => (
+              <div key={event.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
+                    event.type === 'match' ? 'bg-blue-50' : 'bg-green-50'
+                  }`}>
+                    {event.type === 'match' ? '⚽' : '🏃'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{event.title}</p>
+                    <p className="text-xs text-gray-400">{event.location}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-700">
+                    {format(new Date(event.start_at), 'dd MMM', { locale: fr })}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {format(new Date(event.start_at), 'HH:mm')}
+                  </p>
+                </div>
               </div>
-            </div>
-            <p className="text-sm text-gray-500">
-              {format(new Date(event.start_at), 'dd MMM', { locale: fr })}
-            </p>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   )

@@ -20,15 +20,12 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900">
           {t('dashboard.hello')} {getDisplayName(profile, i18n.language)} 👋
         </h2>
-        <p className="text-gray-500">
-          {t('dashboard.role')} :{' '}
-          <span className="font-medium capitalize">
-            {profile?.role ? t(`roles.${profile.role}`) : ''}
-          </span>
+        <p className="text-gray-400 text-sm mt-1">
+          {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
       </div>
       <RoleDashboard />
