@@ -100,6 +100,7 @@ export default function Login() {
           </button>
           <div className="text-center mt-2">
   <button
+    type="button"
     onClick={() => navigate('/forgot-password')}
     className="text-sm text-gray-500 hover:text-green-600"
   >
