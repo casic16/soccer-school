@@ -1,3 +1,4 @@
+cat > /workspaces/soccer-school/app/src/pages/Login.jsx << 'EOF'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -114,3 +115,4 @@ export default function Login() {
     </div>
   )
 }
+EOF
