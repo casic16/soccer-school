@@ -98,16 +98,18 @@ export default function Login() {
           >
             {loading ? t('auth.connecting') : t('auth.login')}
           </button>
-          <div className="text-center mt-2">
-  <button
-    type="button"
-    onClick={() => navigate('/forgot-password')}
-    className="text-sm text-gray-500 hover:text-green-600"
-  >
-    Mot de passe oublié ?
-  </button>
-</div>
         </form>
+
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            onClick={() => navigate('/forgot-password')}
+            className="text-sm text-gray-500 hover:text-green-600"
+          >
+            Mot de passe oublié ?
+          </button>
+        </div>
+
       </div>
     </div>
   )
