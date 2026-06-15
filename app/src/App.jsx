@@ -16,6 +16,8 @@ import Invitations from './pages/Invitations'
 import Register from './pages/Register'
 import RegisterSchool from './pages/public/RegisterSchool'
 import SuperAdmin from './pages/SuperAdmin'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -53,11 +55,15 @@ export default function App() {
           <Route path="invitations" element={<Invitations />} />
           <Route path="/register-school" element={<RegisterSchool />} />
           <Route path="super-admin" element={<SuperAdmin />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         
         </Route>
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/login" />} />
           <Route path="/register-school" element={<RegisterSchool />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />  
         </Routes>
     </BrowserRouter>
   )
