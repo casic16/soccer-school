@@ -57,7 +57,7 @@ export default function Login() {
 
         <div className="flex justify-center mb-6">
   <img
-    src="/logo.png"
+    src="/Logo.png"
     alt="Fariki"
     className="h-16 w-auto object-contain"
   />
