@@ -40,7 +40,7 @@ export default function Login() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       
       {/* Logo au dessus du carré */}
-      <div className="mb-6">
+      <div className="mb-2">
         <img
           src="/Logo.png"
           alt="Fariki"
