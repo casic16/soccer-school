@@ -44,7 +44,7 @@ export default function Login() {
         <img
           src="/Logo.png"
           alt="Fariki"
-          className="h-28 w-auto object-contain mix-blend-multiply"
+          className="h-40 w-auto object-contain mix-blend-multiply"
         />
       </div>
 
