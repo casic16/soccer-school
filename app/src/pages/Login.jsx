@@ -55,8 +55,14 @@ export default function Login() {
           ))}
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">{t('app.name')}</h1>
-        <p className="text-gray-500 mb-6">{t('auth.login')}</p>
+        <div className="flex justify-center mb-6">
+  <img
+    src="/logo.png"
+    alt="Fariki"
+    className="h-16 w-auto object-contain"
+  />
+</div>
+<p className="text-gray-500 mb-6 text-center">{t('auth.login')}</p>
 
         {error && (
           <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg mb-4">
