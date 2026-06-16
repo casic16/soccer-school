@@ -2,18 +2,15 @@ import { useTranslation } from 'react-i18next'
 import { useAvailabilities } from '../hooks/useAvailabilities'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import Badge from '../components/ui/Badge'
+import { ListSkeleton } from '../components/ui/Skeleton'
+import EmptyState from '../components/ui/EmptyState'
 
-const typeColor = {
-  match: 'blue',
-  training: 'green',
-  other: 'gray',
-}
-
-const typeLabel = {
-  match: 'Match',
-  training: 'Entraînement',
-  other: 'Autre',
+const typeIcon = { match: '⚽', training: '🏃', other: '📌' }
+const statusConfig = {
+  confirmed: { label: 'Présent', color: 'bg-green-100 text-green-700' },
+  absent: { label: 'Absent', color: 'bg-red-100 text-red-700' },
+  maybe: { label: 'Peut-être', color: 'bg-yellow-100 text-yellow-700' },
+  pending: { label: 'En attente', color: 'bg-gray-100 text-gray-600' },
 }
 
 export default function Availability() {
@@ -22,45 +19,59 @@ export default function Availability() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        {t('dashboard.pending_availabilities')}
-      </h2>
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.pending_availabilities')}</h2>
+        <p className="text-sm text-gray-400 mt-1">{availabilities.length} réponse{availabilities.length > 1 ? 's' : ''} en attente</p>
+      </div>
+
       {loading ? (
-        <p className="text-gray-500">{t('common.loading')}</p>
+        <ListSkeleton rows={3} />
       ) : availabilities.length === 0 ? (
-        <p className="text-gray-500">Aucune présence en attente.</p>
+        <EmptyState
+          icon="✅"
+          title="Tout est à jour !"
+          description="Aucune présence en attente de confirmation."
+        />
       ) : (
         <div className="space-y-3">
           {availabilities.map((a) => (
-            <div key={a.id} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex justify-between items-center">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge label={typeLabel[a.events?.type]} color={typeColor[a.events?.type]} />
-                  <span className="text-xs text-gray-400">
-                    {a.events?.start_at && format(new Date(a.events.start_at), 'dd MMM HH:mm', { locale: fr })}
-                  </span>
+            <div key={a.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
+                    a.events?.type === 'match' ? 'bg-blue-50' : 'bg-green-50'
+                  }`}>
+                    {typeIcon[a.events?.type] || '📌'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{a.events?.title}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {a.events?.start_at && format(new Date(a.events.start_at), 'dd MMM à HH:mm', { locale: fr })}
+                    </p>
+                    {a.players?.full_name && (
+                      <p className="text-xs text-gray-400">Joueur : {a.players.full_name}</p>
+                    )}
+                  </div>
                 </div>
-                <h3 className="text-gray-800 font-medium">{a.events?.title}</h3>
-                <p className="text-sm text-gray-500 mt-0.5">Joueur : {a.players?.full_name}</p>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => updateStatus(a.id, 'confirmed')}
-                  className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+                  className="flex-1 py-2.5 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition font-medium"
                 >
                   ✓ Présent
                 </button>
                 <button
-                  onClick={() => updateStatus(a.id, 'absent')}
-                  className="px-3 py-1.5 bg-red-100 text-red-600 text-sm rounded-lg hover:bg-red-200 transition"
-                >
-                  ✗ Absent
-                </button>
-                <button
-                 onClick={() => updateStatus(a.id, 'maybe')}
-                 className="px-3 py-1.5 bg-yellow-100 text-yellow-600 text-sm rounded-lg hover:bg-yellow-200 transition"
+                  onClick={() => updateStatus(a.id, 'maybe')}
+                  className="flex-1 py-2.5 bg-yellow-100 text-yellow-700 text-sm rounded-xl hover:bg-yellow-200 transition font-medium"
                 >
                   ? Peut-être
+                </button>
+                <button
+                  onClick={() => updateStatus(a.id, 'absent')}
+                  className="flex-1 py-2.5 bg-red-100 text-red-600 text-sm rounded-xl hover:bg-red-200 transition font-medium"
+                >
+                  ✗ Absent
                 </button>
               </div>
             </div>
