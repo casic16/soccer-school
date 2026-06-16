@@ -70,7 +70,7 @@ export default function Login() {
           </div>
         </div>
 
-        <h1 className="text-xl font-bold text-gray-800 mb-1">Bienvenue 👋</h1>
+        <h1 className="text-xl font-bold text-gray-800 mb-4">Bienvenue 👋</h1>
         <p className="text-gray-400 text-sm mb-6">{t('auth.login')}</p>
 
         {error && (
