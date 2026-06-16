@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { useEffect } from 'react'
 import Sidebar from './Sidebar'
+import MobileNav from './MobileNav'
 import NotificationBell from '../notifications/NotificationBell'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore, getDisplayName } from '../../stores/authStore'
@@ -29,13 +30,24 @@ export default function AppLayout() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+      {/* Sidebar — cachée sur mobile */}
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
+
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex justify-between items-center sticky top-0 z-30 backdrop-blur-sm bg-white/90">
-          <div />
+        <header className="bg-white border-b border-gray-100 px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-30 backdrop-blur-sm bg-white/90">
+          {/* Logo mobile */}
+          <div className="flex items-center gap-2 md:hidden">
+            <div className="w-7 h-7 bg-green-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-bold">F</span>
+            </div>
+            <span className="text-base font-bold text-gray-900">Fariki</span>
+          </div>
+          <div className="hidden md:block" />
+
           <div className="flex items-center gap-3">
-            {/* Language switcher */}
             <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
               {languages.map((lang) => (
                 <button
@@ -55,11 +67,14 @@ export default function AppLayout() {
           </div>
         </header>
 
-        {/* Main content */}
-        <main className="flex-1 px-6 py-8 max-w-6xl w-full mx-auto">
+        {/* Main content — padding bottom sur mobile pour la nav */}
+        <main className="flex-1 px-4 md:px-6 py-6 md:py-8 max-w-6xl w-full mx-auto pb-24 md:pb-8">
           <Outlet />
         </main>
       </div>
+
+      {/* Navigation mobile bottom */}
+      <MobileNav />
     </div>
   )
 }
