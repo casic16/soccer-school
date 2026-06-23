@@ -67,9 +67,34 @@ export default function Login() {
         </div>
 
         {/* Sous-header */}
-        <div className="bg-green-700 px-8 py-3">
-          <p className="text-white text-sm font-medium">Se connecter à Fariki</p>
-        </div>
+        {/* Header avec logo */}
+<div className="px-8 py-6 flex items-center justify-between border-b border-gray-100">
+  <img
+    src="/Logo.png"
+    alt="Fariki"
+    className="h-16 w-auto object-contain mix-blend-multiply"
+  />
+  <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
+    {languages.map((lang) => (
+      <button
+        key={lang.code}
+        onClick={() => changeLanguage(lang.code)}
+        className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all duration-150 ${
+          i18n.language === lang.code
+            ? 'bg-white text-gray-900 shadow-sm'
+            : 'text-gray-500 hover:text-gray-700'
+        }`}
+      >
+        {lang.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+{/* Sous-header rouge comme le logo */}
+<div className="bg-red-600 px-8 py-3">
+  <p className="text-white text-sm font-medium">Se connecter à Fariki</p>
+</div>
 
         {/* Formulaire */}
         <div className="px-8 py-6">
