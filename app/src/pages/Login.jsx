@@ -47,7 +47,7 @@ export default function Login() {
           <img
             src="/Logo.png"
             alt="Fariki"
-            className="h-14 w-auto object-contain mix-blend-multiply brightness-0 invert"
+            className="h-14 w-auto object-contain mix-blend-multiply"
           />
           <div className="flex gap-1 bg-green-700 p-1 rounded-lg">
             {languages.map((lang) => (
