@@ -5,7 +5,7 @@
   "auth": {
     "login": "Se connecter",
     "logout": "Déconnexion",
-    "email": "Email",
+    "email": "Courriel",
     "password": "Mot de passe",
     "connecting": "Connexion..."
   },
@@ -19,7 +19,7 @@
 },
   "roles": {
     "admin": "Admin",
-    "coach": "Coach",
+    "coach": "Entraineur",
     "parent": "Parent",
     "player": "Joueur"
   },

@@ -25,17 +25,25 @@ export default function Login() {
   }
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      navigate('/dashboard')
+  e.preventDefault()
+  setLoading(true)
+  setError(null)
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: {
+      persistSession: remember,
     }
+  })
+
+  if (error) {
+    setError(error.message)
+    setLoading(false)
+  } else {
+    navigate('/dashboard')
   }
+}
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
