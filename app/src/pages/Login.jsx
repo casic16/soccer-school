@@ -55,9 +55,9 @@ export default function Login() {
             ))}
           </div>
         </div>
-        <div className="bg-red-600 px-8 py-3">
-          <p className="text-white text-sm font-medium">Se connecter à Fariki</p>
-        </div>
+        <div className="bg-red-50 px-8 py-3 border-b border-red-100">
+  <p className="text-red-600 text-sm font-medium">Se connecter à Fariki</p>
+</div>
         <div className="px-8 py-6">
           {error && <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4">{error}</div>}
           <form onSubmit={handleLogin} className="space-y-4">
