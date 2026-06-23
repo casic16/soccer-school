@@ -40,18 +40,21 @@ export default function TeamDetail() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={() => navigate('/teams')}
-          className="text-gray-400 hover:text-gray-600 transition"
-        >
-          ← Retour
-        </button>
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">{team.name}</h2>
-          <p className="text-sm text-gray-500">{team.age_group} — {team.season}</p>
-        </div>
-      </div>
+      <div className="flex items-center gap-4 mb-8">
+  <button
+    onClick={() => navigate('/teams')}
+    className="w-9 h-9 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:shadow-md transition-all"
+  >
+    ←
+  </button>
+  <div className="flex items-center gap-3">
+    <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-2xl">⚽</div>
+    <div>
+      <h2 className="text-2xl font-bold text-gray-900">{team.name}</h2>
+      <p className="text-sm text-gray-400">{team.age_group} — {team.season}</p>
+    </div>
+  </div>
+</div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6 border-b border-gray-100">
