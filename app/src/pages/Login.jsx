@@ -63,7 +63,7 @@ export default function Login() {
 
         {/* Sous-header rouge faible */}
         <div className="bg-red-50 px-8 py-3 border-b border-red-100">
-          <p className="text-black-600 text-sm font-medium">Se connecter à Fariki</p>
+          <p className="text-green-600 text-sm font-medium">Se connecter à Fariki</p>
         </div>
 
         {/* Formulaire */}
