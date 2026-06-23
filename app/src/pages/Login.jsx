@@ -39,9 +39,9 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-md overflow-hidden">
-        <div className="px-8 py-6 flex items-center justify-between border-b border-gray-100">
-          <img src="/Logo.png" alt="Fariki" className="h-24 w-auto object-contain" style={{mixBlendMode: 'multiply', backgroundColor: 'transparent'}} />
-          <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
+        <div className="px-8 py-4 flex items-center justify-between border-b border-gray-100">
+  <img src="/Logo.png" alt="Fariki" className="h-24 w-auto object-contain mix-blend-multiply" />
+          <div className="flex gap-1 bg-gray-50 p-1 rounded-lg">
             {languages.map((lang) => (
               <button
                 key={lang.code}
