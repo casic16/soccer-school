@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEvents } from '../hooks/useEvents'
+import { useAuthStore } from '../stores/authStore'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import Badge from '../components/ui/Badge'
@@ -15,6 +16,7 @@ const typeIcon = { match: '⚽', training: '🏃', other: '📌' }
 export default function Events() {
   const { t } = useTranslation()
   const { events, loading, setEvents } = useEvents()
+  const { profile } = useAuthStore()
   const [showForm, setShowForm] = useState(false)
 
   const handleCreated = (newEvent) => {
@@ -23,6 +25,8 @@ export default function Events() {
     ))
   }
 
+  const canCreate = ['admin', 'coach'].includes(profile?.role)
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -30,12 +34,14 @@ export default function Events() {
           <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.upcoming_events')}</h2>
           <p className="text-sm text-gray-400 mt-1">{events.length} événement{events.length > 1 ? 's' : ''} à venir</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition font-medium flex items-center gap-2"
-        >
-          <span>+</span> {t('common.add')}
-        </button>
+        {canCreate && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="px-4 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition font-medium flex items-center gap-2"
+          >
+            <span>+</span> {t('common.add')}
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -51,15 +57,15 @@ export default function Events() {
         <EmptyState
           icon="📅"
           title="Aucun événement à venir"
-          description="Planifiez vos prochains matchs et entraînements."
-          action={
+          description="Les prochains matchs et entraînements apparaîtront ici."
+          action={canCreate ? (
             <button
               onClick={() => setShowForm(true)}
               className="px-4 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition"
             >
               + Créer un événement
             </button>
-          }
+          ) : null}
         />
       ) : (
         <div className="space-y-3">
