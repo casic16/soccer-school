@@ -36,18 +36,17 @@ export default function Sidebar() {
     <aside className="w-64 bg-white border-r border-gray-100 min-h-screen flex flex-col">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-100">
-        <button
-          onClick={() => window.location.reload()}
-          className="flex items-center gap-2 group"
-        >
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-sm font-bold">F</span>
-          </div>
-          <span className="text-lg font-bold text-gray-900 group-hover:text-green-600 transition-colors">
-            Fariki
-          </span>
-        </button>
-      </div>
+  <button
+    onClick={() => window.location.reload()}
+    className="flex items-center justify-center w-full"
+  >
+    <img
+      src="/Logo.png"
+      alt="Fariki"
+      className="h-12 w-auto object-contain mix-blend-multiply"
+    />
+  </button>
+</div>
 
       {/* User profile */}
       <div className="px-4 py-4 border-b border-gray-100">
