@@ -11,13 +11,59 @@ export const useAvailabilities = () => {
     if (!profile) return
 
     const fetchAvailabilities = async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('availabilities')
-        .select('*, events(title, start_at, type), players(full_name)')
+        .select('*, events(title, start_at, type), players(full_name, user_id)')
         .eq('status', 'pending')
         .order('created_at', { ascending: false })
         .limit(10)
 
+      if (profile.role === 'parent' || profile.role === 'player') {
+        // Parent/joueur voit uniquement les présences de ses enfants/lui-même
+        const { data: playerIds } = await supabase
+          .from('players')
+          .select('id')
+          .eq('user_id', profile.id)
+        
+        const ids = playerIds?.map(p => p.id) || []
+        if (ids.length === 0) {
+          setAvailabilities([])
+          setLoading(false)
+          return
+        }
+        query = query.in('player_id', ids)
+
+      } else if (profile.role === 'coach') {
+        // Coach voit les présences de ses équipes uniquement
+        const { data: coachTeams } = await supabase
+          .from('teams')
+          .select('id')
+          .eq('school_id', profile.school_id)
+          .eq('coach_id', profile.id)
+        
+        const teamIds = coachTeams?.map(t => t.id) || []
+        if (teamIds.length === 0) {
+          setAvailabilities([])
+          setLoading(false)
+          return
+        }
+
+        const { data: playerIds } = await supabase
+          .from('players')
+          .select('id')
+          .in('team_id', teamIds)
+        
+        const ids = playerIds?.map(p => p.id) || []
+        if (ids.length === 0) {
+          setAvailabilities([])
+          setLoading(false)
+          return
+        }
+        query = query.in('player_id', ids)
+      }
+      // Admin voit tout — pas de filtre supplémentaire
+
+      const { data, error } = await query
       if (error) console.error('Availabilities fetch error:', error)
       else setAvailabilities(data || [])
       setLoading(false)

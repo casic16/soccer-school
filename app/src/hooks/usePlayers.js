@@ -17,15 +17,35 @@ export const usePlayers = (teamId = null) => {
 
       if (teamId) {
         query = query.eq('team_id', teamId)
+      } else if (profile.role === 'coach') {
+        // Coach voit uniquement les joueurs de ses équipes
+        const { data: coachTeams } = await supabase
+          .from('teams')
+          .select('id')
+          .eq('school_id', profile.school_id)
+          .eq('coach_id', profile.id)
+        
+        const teamIds = coachTeams?.map(t => t.id) || []
+        if (teamIds.length === 0) {
+          setPlayers([])
+          setLoading(false)
+          return
+        }
+        query = query.in('team_id', teamIds)
       } else {
-        query = query.in(
-          'team_id',
-          (await supabase
-            .from('teams')
-            .select('id')
-            .eq('school_id', profile.school_id)
-          ).data?.map((t) => t.id) || []
-        )
+        // Admin voit tous les joueurs de l'école
+        const { data: schoolTeams } = await supabase
+          .from('teams')
+          .select('id')
+          .eq('school_id', profile.school_id)
+        
+        const teamIds = schoolTeams?.map(t => t.id) || []
+        if (teamIds.length === 0) {
+          setPlayers([])
+          setLoading(false)
+          return
+        }
+        query = query.in('team_id', teamIds)
       }
 
       const { data, error } = await query.order('full_name', { ascending: true })
@@ -38,15 +58,14 @@ export const usePlayers = (teamId = null) => {
   }, [profile, teamId])
 
   const addPlayer = async (player) => {
-  const { data: { session } } = await supabase.auth.getSession()
-  const { data, error } = await supabase
-    .from('players')
-    .insert({ ...player, user_id: session.user.id })
-    .select('*, teams(name, age_group)')
-    .single()
-  if (!error) setPlayers((prev) => [...prev, data])
-  return { data, error }
-}
+    const { data, error } = await supabase
+      .from('players')
+      .insert(player)
+      .select('*, teams(name, age_group)')
+      .single()
+    if (!error) setPlayers((prev) => [...prev, data])
+    return { data, error }
+  }
 
   const deletePlayer = async (id) => {
     const { error } = await supabase.from('players').delete().eq('id', id)
