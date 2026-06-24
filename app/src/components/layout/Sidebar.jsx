@@ -43,7 +43,7 @@ export default function Sidebar() {
     <img
       src="/Logo.png"
       alt="Fariki"
-      className="h-18 w-auto object-contain mix-blend-multiply"
+      className="h-16 w-auto object-contain mix-blend-multiply"
     />
   </button>
 </div>
