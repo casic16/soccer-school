@@ -18,6 +18,7 @@ import RegisterSchool from './pages/public/RegisterSchool'
 import SuperAdmin from './pages/SuperAdmin'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+import Profile from './pages/Profile'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/register-school" element={<RegisterSchool />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="profile" element={<Profile />} />
 
         {/* Routes privées */}
         <Route path="/" element={

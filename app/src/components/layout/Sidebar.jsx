@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore, getDisplayName } from '../../stores/authStore'
+import Avatar from '../ui/Avatar'
 
 const allNavItems = [
   { path: '/dashboard', label: 'dashboard.title', icon: '🏠', roles: ['admin', 'coach', 'parent', 'player', 'super_admin'] },
@@ -50,18 +51,16 @@ export default function Sidebar() {
 
       {/* User profile */}
       <div className="px-4 py-4 border-b border-gray-100">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
-          <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-sm font-bold">{initials || '?'}</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-800 truncate">{displayName}</p>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleColors[profile?.role] || 'bg-gray-100 text-gray-600'}`}>
-              {profile?.role ? t(`roles.${profile.role}`) : ''}
-            </span>
-          </div>
-        </div>
-      </div>
+  <NavLink to="/profile" className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-green-50 transition">
+    <Avatar url={profile?.avatar_url} name={displayName} size="md" />
+    <div className="flex-1 min-w-0">
+      <p className="text-sm font-semibold text-gray-800 truncate">{displayName}</p>
+      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleColors[profile?.role] || 'bg-gray-100 text-gray-600'}`}>
+        {profile?.role ? t(`roles.${profile.role}`) : ''}
+      </span>
+    </div>
+  </NavLink>
+</div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
