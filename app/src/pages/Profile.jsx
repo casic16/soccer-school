@@ -17,6 +17,7 @@ export default function Profile() {
   const { t, i18n } = useTranslation()
   const { updateProfile, uploadAvatar, changePassword, saving, uploading, error, success } = useProfile()
   const fileInputRef = useRef(null)
+  const navigate = useNavigate()
 
   const [form, setForm] = useState({
     first_name: profile?.first_name || '',
