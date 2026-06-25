@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import { useProfile } from '../hooks/useProfile'
 import Avatar from '../components/ui/Avatar'
+import { useNavigate } from 'react-router-dom'
 
 const positions = ['Gardien', 'Défenseur', 'Milieu', 'Attaquant']
 const languages = [
@@ -36,13 +37,13 @@ export default function Profile() {
   const [passwordError, setPasswordError] = useState(null)
 
   const handleSave = async () => {
-    const updates = { ...form }
-    if (form.preferred_language !== i18n.language) {
-      i18n.changeLanguage(form.preferred_language)
-      document.documentElement.dir = form.preferred_language === 'ar' ? 'rtl' : 'ltr'
-    }
-    await updateProfile(updates)
+  if (form.preferred_language !== i18n.language) {
+    i18n.changeLanguage(form.preferred_language)
+    document.documentElement.dir = form.preferred_language === 'ar' ? 'rtl' : 'ltr'
   }
+  await updateProfile({ ...form, date_of_birth: form.date_of_birth || null })
+  navigate('/dashboard')
+}
 
   const handleAvatarClick = () => fileInputRef.current?.click()
 
@@ -226,6 +227,7 @@ export default function Profile() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
             <input
               type="password"
+              autoComplete="new-password"
               value={passwordForm.new_password}
               onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
               className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -236,6 +238,7 @@ export default function Profile() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Confirmer</label>
             <input
               type="password"
+              autoComplete="new-password"
               value={passwordForm.confirm_password}
               onChange={(e) => setPasswordForm({ ...passwordForm, confirm_password: e.target.value })}
               className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
