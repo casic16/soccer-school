@@ -40,4 +40,24 @@ export const useAuthStore = create((set) => ({
     await supabase.auth.signOut()
     set({ user: null, profile: null })
   },
+  export const getDisplayName = (profile, language = 'en') => {
+  if (!profile) return 'User'
+
+  // si tu as nom + prénom séparés
+  if (profile.first_name || profile.last_name) {
+    return `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
+  }
+
+  // si tu stockes full_name
+  if (profile.full_name) {
+    return profile.full_name
+  }
+
+  // fallback selon langue
+  if (language === 'fr') {
+    return 'Utilisateur'
+  }
+
+  return 'User'
+}
 }))
