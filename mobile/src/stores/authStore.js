@@ -46,21 +46,10 @@ export const useAuthStore = create((set) => ({
   }
 }))
 
-// EN DEHORS DU STORE
+export const useAuthStore = create((set) => ({
+  ...
+}))
+
 export const getDisplayName = (profile, language = 'en') => {
-  if (!profile) return 'User'
-
-  if (profile.first_name || profile.last_name) {
-    return `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
-  }
-
-  if (profile.full_name) {
-    return profile.full_name
-  }
-
-  if (language === 'fr') {
-    return 'Utilisateur'
-  }
-
-  return 'User'
+  return "..."
 }
