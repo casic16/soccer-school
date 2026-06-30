@@ -41,7 +41,10 @@ export const useAuthStore = create((set) => ({
     set({ user: null, profile: null })
   },
 }))
+<<<<<<< HEAD
 
+=======
+>>>>>>> 954bbb9671e727280d891a568f8059f961c9047b
 export const getDisplayName = (profile, language = 'en') => {
   if (!profile) return 'User'
 

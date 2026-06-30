@@ -1,3 +1,4 @@
+cat > /workspaces/soccer-school/app/src/stores/authStore.js << 'ENDOFFILE'
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 
@@ -7,9 +8,13 @@ const fetchProfile = async (userId) => {
     .select('*')
     .eq('id', userId)
     .single()
-
   if (error) console.error('Profile fetch error:', error)
   return data
+}
+
+export const getDisplayName = (profile, language) => {
+  if (language === 'ar' && profile?.full_name_ar) return profile.full_name_ar
+  return profile?.full_name || ''
 }
 
 export const useAuthStore = create((set) => ({
@@ -40,23 +45,6 @@ export const useAuthStore = create((set) => ({
   signOut: async () => {
     await supabase.auth.signOut()
     set({ user: null, profile: null })
-  }
-}))   // ← ça manquait probablement
-
-export const getDisplayName = (profile, language = 'en') => {
-  if (!profile) return 'User'
-
-  if (profile.first_name || profile.last_name) {
-    return `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
-  }
-
-  if (profile.full_name) {
-    return profile.full_name
-  }
-
-  if (language === 'fr') {
-    return 'Utilisateur'
-  }
-
-  return 'User'
-}
+  },
+}))
+ENDOFFILE
