@@ -1,4 +1,3 @@
-cat > /workspaces/soccer-school/app/src/stores/authStore.js << 'ENDOFFILE'
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 
@@ -47,4 +46,3 @@ export const useAuthStore = create((set) => ({
     set({ user: null, profile: null })
   },
 }))
-ENDOFFILE

@@ -11,6 +11,11 @@ const fetchProfile = async (userId) => {
   return data
 }
 
+export const getDisplayName = (profile, language) => {
+  if (language === 'ar' && profile?.full_name_ar) return profile.full_name_ar
+  return profile?.full_name || ''
+}
+
 export const useAuthStore = create((set) => ({
   user: null,
   profile: null,
@@ -41,24 +46,3 @@ export const useAuthStore = create((set) => ({
     set({ user: null, profile: null })
   },
 }))
-<<<<<<< HEAD
-
-=======
->>>>>>> 954bbb9671e727280d891a568f8059f961c9047b
-export const getDisplayName = (profile, language = 'en') => {
-  if (!profile) return 'User'
-
-  if (profile.first_name || profile.last_name) {
-    return `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
-  }
-
-  if (profile.full_name) {
-    return profile.full_name
-  }
-
-  if (language === 'fr') {
-    return 'Utilisateur'
-  }
-
-  return 'User'
-}
