@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 
 const languages = [
-  { code: 'fr', label: 'FR' },
   { code: 'en', label: 'EN' },
-  { code: 'ar', label: 'ع' },
+  { code: 'ar', label: 'AR' },
+  { code: 'fr', label: 'FR' },
 ]
 
 export default function Login() {
@@ -25,86 +25,117 @@ export default function Login() {
   }
 
   const handleLogin = async (e) => {
-  e.preventDefault()
-  setLoading(true)
-  setError(null)
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-    options: {
-      persistSession: remember,
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: { persistSession: remember },
+    })
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+    } else {
+      navigate('/dashboard')
     }
-  })
-
-  if (error) {
-    setError(error.message)
-    setLoading(false)
-  } else {
-    navigate('/dashboard')
   }
-}
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-lg w-full max-w-md overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 40%, #0a0f1e 100%)',
+      }}
+    >
+      {/* Glow effect */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(220,38,38,0.15) 0%, transparent 60%)',
+        }}
+      />
 
-        {/* Header logo + langue */}
-        <div className="px-8 py-4 flex items-center justify-between border-b border-gray-100">
-          <img src="/Logo.png" alt="Fariki" className="h-28 w-auto object-contain" />
-          <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => changeLanguage(lang.code)}
-                className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all duration-150 ${
-                  i18n.language === lang.code
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
+      {/* Logo */}
+      <div className="mb-8 relative z-10">
+        <img
+          src="/Logo.png"
+          alt="Fariki"
+          className="h-28 w-auto object-contain"
+          style={{ filter: 'drop-shadow(0 0 20px rgba(220,38,38,0.4))' }}
+        />
+      </div>
+
+      {/* Language selector */}
+      <div className="mb-8 relative z-10">
+        <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full p-1 gap-1">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => changeLanguage(lang.code)}
+              className={`px-6 py-2 rounded-full text-sm font-bold tracking-widest transition-all duration-200 ${
+                i18n.language === lang.code
+                  ? 'bg-red-600 text-white shadow-lg'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              {lang.label}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Sous-header rouge faible */}
-        <div className="bg-red-50 px-8 py-3 border-b border-red-100">
-          <p className="text-green-600 text-sm font-medium">Se connecter à Fariki</p>
-        </div>
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md">
+        <div
+          className="rounded-2xl p-8 backdrop-blur-md"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+          }}
+        >
+          {/* Title */}
+          <p className="text-white/50 text-xs font-bold tracking-[0.3em] uppercase text-center mb-8">
+            Se connecter à Fariki
+          </p>
 
-        {/* Formulaire */}
-        <div className="px-8 py-6">
           {error && (
-            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4">
+            <div className="bg-red-500/20 border border-red-500/30 text-red-300 text-sm p-3 rounded-xl mb-4">
               {error}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('auth.email')} <span className="text-red-500">*</span>
+              <label className="block text-white/50 text-xs font-bold tracking-widest uppercase mb-2">
+                {t('auth.email')}
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}
                 placeholder="vous@exemple.com"
                 required
               />
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('auth.password')} <span className="text-red-500">*</span>
+              <label className="block text-white/50 text-xs font-bold tracking-widest uppercase mb-2">
+                {t('auth.password')}
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}
                 placeholder="••••••••"
                 required
               />
@@ -116,14 +147,14 @@ export default function Login() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  className="w-4 h-4 rounded border-white/20 text-red-600 focus:ring-red-500"
                 />
-                <span className="text-sm text-gray-600">Se souvenir de moi</span>
+                <span className="text-sm text-white/50">Se souvenir de moi</span>
               </label>
               <button
                 type="button"
                 onClick={() => navigate('/forgot-password')}
-                className="text-sm text-green-600 hover:underline"
+                className="text-sm text-red-400 hover:text-red-300 transition"
               >
                 Mot de passe oublié ?
               </button>
@@ -132,18 +163,22 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2.5 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl font-bold text-white transition-all duration-200 disabled:opacity-50 mt-4"
+              style={{
+                background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+                boxShadow: '0 8px 20px rgba(220,38,38,0.4)',
+              }}
             >
-              {loading ? t('auth.connecting') : (
-                <>
-                  <span>✓</span>
-                  <span>Connexion</span>
-                </>
-              )}
+              {loading ? t('auth.connecting') : '✓ Connexion'}
             </button>
           </form>
         </div>
       </div>
+
+      {/* Footer */}
+      <p className="mt-8 text-white/20 text-xs tracking-widest relative z-10">
+        FARIKI © {new Date().getFullYear()}
+      </p>
     </div>
   )
 }
