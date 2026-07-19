@@ -2,7 +2,25 @@ import { useEffect } from 'react'
 import { Tabs } from 'expo-router'
 import { useAuthStore } from '../../src/stores/authStore'
 import { router } from 'expo-router'
-import { Text } from 'react-native'
+import { Text, View } from 'react-native'
+
+const MARINE = '#0d1b3e'
+const EMERALD = '#22c55e'
+
+function TabIcon({ emoji, focused }) {
+  return (
+    <View style={{
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 40,
+      height: 40,
+      borderRadius: 10,
+      backgroundColor: focused ? 'rgba(34,197,94,0.12)' : 'transparent',
+    }}>
+      <Text style={{ fontSize: focused ? 22 : 20 }}>{emoji}</Text>
+    </View>
+  )
+}
 
 export default function AppLayout() {
   const { user, loading } = useAuthStore()
@@ -19,13 +37,20 @@ export default function AppLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#16a34a',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarActiveTintColor: EMERALD,
+        tabBarInactiveTintColor: '#94a3b8',
         tabBarStyle: {
           backgroundColor: '#fff',
-          borderTopColor: '#f1f5f9',
+          borderTopColor: '#e2e8f0',
+          borderTopWidth: 0.5,
           paddingBottom: 8,
-          height: 60,
+          paddingTop: 4,
+          height: 64,
+        },
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontWeight: '600',
+          letterSpacing: 0.3,
         },
       }}
     >
@@ -33,37 +58,38 @@ export default function AppLayout() {
         name="dashboard"
         options={{
           title: 'Accueil',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>🏠</Text>,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="events"
         options={{
           title: 'Événements',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>📅</Text>,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="📅" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="availability"
         options={{
           title: 'Présences',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>✅</Text>,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="✅" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
           title: 'Notifs',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>🔔</Text>,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="🔔" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profil',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>👤</Text>,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
         }}
       />
+      <Tabs.Screen name="teams" options={{ href: null }} />
     </Tabs>
   )
 }
