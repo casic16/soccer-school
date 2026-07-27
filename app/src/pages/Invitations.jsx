@@ -50,9 +50,7 @@ export default function Invitations() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Invitations</h2>
-        <p className="text-sm text-gray-400 mt-1">{invitations.length} invitation{invitations.length > 1 ? 's' : ''}</p>
+              <p className="text-sm text-gray-400 mt-1">{invitations.length} invitation{invitations.length > 1 ? 's' : ''}</p>
       </div>
 
       {/* Formulaire */}

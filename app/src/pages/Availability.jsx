@@ -19,9 +19,7 @@ export default function Availability() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.pending_availabilities')}</h2>
-        <p className="text-sm text-gray-400 mt-1">{availabilities.length} réponse{availabilities.length > 1 ? 's' : ''} en attente</p>
+              <p className="text-sm text-gray-400 mt-1">{availabilities.length} réponse{availabilities.length > 1 ? 's' : ''} en attente</p>
       </div>
 
       {loading ? (

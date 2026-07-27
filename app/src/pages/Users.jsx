@@ -18,9 +18,7 @@ export default function Users() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">{t('users.title')}</h2>
-        <p className="text-sm text-gray-400 mt-1">{users.length} utilisateur{users.length > 1 ? 's' : ''}</p>
+              <p className="text-sm text-gray-400 mt-1">{users.length} utilisateur{users.length > 1 ? 's' : ''}</p>
       </div>
 
       {loading ? (

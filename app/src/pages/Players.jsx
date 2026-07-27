@@ -25,125 +25,90 @@ export default function Players() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Joueurs</h2>
-          <p className="text-sm text-gray-400 mt-1">{players.length} joueur{players.length > 1 ? 's' : ''}</p>
-        </div>
+      <div className="flex justify-end mb-5">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition font-medium"
+          className="px-4 py-2 text-sm rounded-lg font-semibold transition"
+          style={{ background: 'hsl(142, 71%, 45%)', color: 'hsl(222, 47%, 11%)' }}
         >
           {showForm ? t('common.cancel') : `+ ${t('common.add')}`}
         </button>
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-          <h3 className="font-bold text-gray-700 mb-4">Nouveau joueur</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border mb-5" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+          <h3 className="font-heading font-bold text-sm mb-4" style={{ color: 'hsl(222, 47%, 11%)' }}>Nouveau joueur</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[
+              { label: 'Nom complet *', key: 'full_name', type: 'text' },
+              { label: 'Numéro', key: 'jersey_number', type: 'text' },
+              { label: 'Position', key: 'position', type: 'text' },
+            ].map(field => (
+              <div key={field.key}>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">{field.label}</label>
+                <input
+                  type={field.type}
+                  value={form[field.key]}
+                  onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                  style={{ borderColor: 'hsl(214, 32%, 91%)', '--tw-ring-color': 'hsl(142, 71%, 45%)' }}
+                />
+              </div>
+            ))}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet *</label>
-              <input
-                type="text"
-                value={form.full_name}
-                onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Équipe *</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Équipe *</label>
               <select
                 value={form.team_id}
                 onChange={(e) => setForm({ ...form, team_id: e.target.value })}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none"
+                style={{ borderColor: 'hsl(214, 32%, 91%)' }}
               >
                 <option value="">Sélectionner...</option>
-                {teams.map((team) => (
-                  <option key={team.id} value={team.id}>{team.name}</option>
-                ))}
+                {teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}
               </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Numéro</label>
-              <input
-                type="text"
-                value={form.jersey_number}
-                onChange={(e) => setForm({ ...form, jersey_number: e.target.value })}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
-              <input
-                type="text"
-                value={form.position}
-                onChange={(e) => setForm({ ...form, position: e.target.value })}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
             </div>
           </div>
           <button
             onClick={handleAdd}
             disabled={saving}
-            className="mt-4 px-4 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition disabled:opacity-50"
+            className="mt-4 px-4 py-2 text-sm rounded-lg font-semibold disabled:opacity-50"
+            style={{ background: 'hsl(142, 71%, 45%)', color: 'hsl(222, 47%, 11%)' }}
           >
             {saving ? 'Enregistrement...' : t('common.save')}
           </button>
         </div>
       )}
 
-      {loading ? (
-        <ListSkeleton rows={4} />
-      ) : players.length === 0 ? (
-        <EmptyState
-          icon="⚽"
-          title="Aucun joueur"
-          description="Ajoutez des joueurs à vos équipes."
-          action={
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-4 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition"
-            >
-              + Ajouter un joueur
-            </button>
-          }
+      {loading ? <ListSkeleton rows={4} /> : players.length === 0 ? (
+        <EmptyState icon="⚽" title="Aucun joueur" description="Ajoutez des joueurs à vos équipes."
+          action={<button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm rounded-lg font-semibold" style={{ background: 'hsl(142, 71%, 45%)', color: 'hsl(222, 47%, 11%)' }}>+ Ajouter</button>}
         />
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-xl border overflow-hidden" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead style={{ background: 'hsl(210, 40%, 98%)', borderBottom: '0.5px solid hsl(214, 32%, 91%)' }}>
               <tr>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">#</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Nom</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Équipe</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Position</th>
-                <th className="px-5 py-3"></th>
+                {['#', 'Nom', 'Équipe', 'Position', ''].map(h => (
+                  <th key={h} className="text-left px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-400">{h}</th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
               {players.map((player) => (
-                <tr key={player.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-4 text-gray-400 font-mono">{player.jersey_number || '—'}</td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-sm font-bold text-green-700">
+                <tr key={player.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 font-mono text-slate-400 text-xs">{player.jersey_number || '—'}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold" style={{ background: 'hsl(142, 71%, 92%)', color: 'hsl(142, 71%, 25%)' }}>
                         {player.full_name[0]?.toUpperCase()}
                       </div>
-                      <span className="font-medium text-gray-800">{player.full_name}</span>
+                      <span className="font-semibold" style={{ color: 'hsl(222, 47%, 11%)' }}>{player.full_name}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-4">
-                    <Badge label={player.teams?.name} color="green" />
-                  </td>
-                  <td className="px-5 py-4 text-gray-500">{player.position || '—'}</td>
-                  <td className="px-5 py-4 text-right">
-                    <button
-                      onClick={() => deletePlayer(player.id)}
-                      className="text-xs text-gray-400 hover:text-red-500 transition-colors"
-                    >
-                      {t('common.delete')}
-                    </button>
+                  <td className="px-4 py-3"><Badge label={player.teams?.name} color="green" /></td>
+                  <td className="px-4 py-3 text-slate-400 text-xs">{player.position || '—'}</td>
+                  <td className="px-4 py-3 text-right">
+                    <button onClick={() => deletePlayer(player.id)} className="text-xs text-slate-300 hover:text-red-500 transition-colors">{t('common.delete')}</button>
                   </td>
                 </tr>
               ))}
