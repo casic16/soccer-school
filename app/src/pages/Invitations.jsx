@@ -50,13 +50,20 @@ export default function Invitations() {
 
   return (
     <div>
-              <p className="text-sm text-gray-400 mt-1">{invitations.length} invitation{invitations.length > 1 ? 's' : ''}</p>
-      </div>
+      <p className="text-sm text-gray-400 mt-1">
+        {invitations.length} invitation{invitations.length > 1 ? 's' : ''}
+      </p>
 
       {/* Formulaire */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
         <h3 className="font-semibold text-gray-700 mb-4">Inviter un utilisateur</h3>
-        {error && <p className="text-red-500 text-sm mb-3 bg-red-50 p-3 rounded-xl">{error}</p>}
+
+        {error && (
+          <p className="text-red-500 text-sm mb-3 bg-red-50 p-3 rounded-xl">
+            {error}
+          </p>
+        )}
+
         <div className="flex gap-3">
           <input
             type="email"
@@ -65,6 +72,7 @@ export default function Invitations() {
             placeholder="email@exemple.com"
             className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
+
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
@@ -74,6 +82,7 @@ export default function Invitations() {
             <option value="player">Joueur</option>
             <option value="coach">Coach</option>
           </select>
+
           <button
             onClick={handleInvite}
             disabled={saving || !email}
@@ -98,34 +107,62 @@ export default function Invitations() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Email</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Rôle</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Statut</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Expire</th>
+                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  Rôle
+                </th>
+                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  Statut
+                </th>
+                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  Expire
+                </th>
                 <th className="px-5 py-3"></th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-50">
               {invitations.map((inv) => (
                 <tr key={inv.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-4 font-medium text-gray-800">{inv.email}</td>
+                  <td className="px-5 py-4 font-medium text-gray-800">
+                    {inv.email}
+                  </td>
+
                   <td className="px-5 py-4">
-                    <span className={`text-xs px-2 py-1 rounded-lg font-medium ${roleColors[inv.role] || 'bg-gray-100 text-gray-600'}`}>
+                    <span
+                      className={`text-xs px-2 py-1 rounded-lg font-medium ${
+                        roleColors[inv.role] || 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
                       {inv.role}
                     </span>
                   </td>
+
                   <td className="px-5 py-4">
                     {inv.accepted_at ? (
-                      <span className="text-xs text-green-600 font-medium">✓ Acceptée</span>
+                      <span className="text-xs text-green-600 font-medium">
+                        ✓ Acceptée
+                      </span>
                     ) : new Date(inv.expires_at) < new Date() ? (
-                      <span className="text-xs text-red-500 font-medium">Expirée</span>
+                      <span className="text-xs text-red-500 font-medium">
+                        Expirée
+                      </span>
                     ) : (
-                      <span className="text-xs text-yellow-600 font-medium">En attente</span>
+                      <span className="text-xs text-yellow-600 font-medium">
+                        En attente
+                      </span>
                     )}
                   </td>
+
                   <td className="px-5 py-4 text-gray-400 text-xs">
-                    {formatDistanceToNow(new Date(inv.expires_at), { addSuffix: true, locale: fr })}
+                    {formatDistanceToNow(new Date(inv.expires_at), {
+                      addSuffix: true,
+                      locale: fr,
+                    })}
                   </td>
+
                   <td className="px-5 py-4 text-right flex gap-3 justify-end">
                     {!inv.accepted_at && (
                       <button
@@ -135,6 +172,7 @@ export default function Invitations() {
                         {copied === inv.token ? '✓ Copié' : 'Copier lien'}
                       </button>
                     )}
+
                     <button
                       onClick={() => deleteInvitation(inv.id)}
                       className="text-xs text-gray-400 hover:text-red-500 transition-colors"

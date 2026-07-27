@@ -18,8 +18,9 @@ export default function Users() {
 
   return (
     <div>
-              <p className="text-sm text-gray-400 mt-1">{users.length} utilisateur{users.length > 1 ? 's' : ''}</p>
-      </div>
+      <p className="text-sm text-gray-400 mt-1">
+        {users.length} utilisateur{users.length > 1 ? 's' : ''}
+      </p>
 
       {loading ? (
         <ListSkeleton rows={4} />
@@ -34,12 +35,19 @@ export default function Users() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Utilisateur</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Email</th>
-                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">Rôle</th>
+                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  Utilisateur
+                </th>
+                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="text-left px-5 py-3 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  Rôle
+                </th>
                 <th className="px-5 py-3"></th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-50">
               {users.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50 transition-colors">
@@ -48,13 +56,21 @@ export default function Users() {
                       <div className="w-9 h-9 bg-green-50 rounded-xl flex items-center justify-center text-sm font-bold text-green-700">
                         {user.full_name?.[0]?.toUpperCase() || '?'}
                       </div>
-                      <span className="font-medium text-gray-800">{user.full_name}</span>
+
+                      <span className="font-medium text-gray-800">
+                        {user.full_name}
+                      </span>
+
                       {user.id === profile?.id && (
                         <span className="text-xs text-gray-400">(moi)</span>
                       )}
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-gray-500">{user.email}</td>
+
+                  <td className="px-5 py-4 text-gray-500">
+                    {user.email}
+                  </td>
+
                   <td className="px-5 py-4">
                     <select
                       value={user.role}
@@ -68,6 +84,7 @@ export default function Users() {
                       <option value="player">Joueur</option>
                     </select>
                   </td>
+
                   <td className="px-5 py-4 text-right">
                     {user.id !== profile?.id && (
                       <button
