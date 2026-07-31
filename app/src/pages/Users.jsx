@@ -18,9 +18,7 @@ export default function Users() {
 
   return (
     <div>
-      <p className="text-sm text-gray-400 mt-1">
-        {users.length} utilisateur{users.length > 1 ? 's' : ''}
-      </p>
+    <p className="text-xs text-slate-400 mb-4">{users.length} utilisateur{users.length > 1 ? 's' : ''}</p>
 
       {loading ? (
         <ListSkeleton rows={4} />
@@ -31,7 +29,7 @@ export default function Users() {
           description="Invitez des coaches, parents et joueurs à rejoindre votre école."
         />
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>

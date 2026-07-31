@@ -55,43 +55,38 @@ export default function Invitations() {
       </p>
 
       {/* Formulaire */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-        <h3 className="font-semibold text-gray-700 mb-4">Inviter un utilisateur</h3>
-
-        {error && (
-          <p className="text-red-500 text-sm mb-3 bg-red-50 p-3 rounded-xl">
-            {error}
-          </p>
-        )}
-
-        <div className="flex gap-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="email@exemple.com"
-            className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            <option value="parent">Parent</option>
-            <option value="player">Joueur</option>
-            <option value="coach">Coach</option>
-          </select>
-
-          <button
-            onClick={handleInvite}
-            disabled={saving || !email}
-            className="px-4 py-2 bg-green-600 text-white text-sm rounded-xl hover:bg-green-700 transition disabled:opacity-50 font-medium"
-          >
-            {saving ? 'Envoi...' : 'Inviter'}
-          </button>
-        </div>
-      </div>
+<div className="bg-white rounded-xl border p-4 mb-5" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+  <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Inviter un utilisateur</p>
+  {error && <p className="text-red-500 text-xs mb-3 bg-red-50 p-2 rounded-lg">{error}</p>}
+  <div className="flex gap-2">
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder="email@exemple.com"
+      className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none"
+      style={{ borderColor: 'hsl(214, 32%, 91%)' }}
+    />
+    <select
+      value={role}
+      onChange={(e) => setRole(e.target.value)}
+      className="border rounded-lg px-3 py-2 text-sm focus:outline-none"
+      style={{ borderColor: 'hsl(214, 32%, 91%)' }}
+    >
+      <option value="parent">Parent</option>
+      <option value="player">Joueur</option>
+      <option value="coach">Coach</option>
+    </select>
+    <button
+      onClick={handleInvite}
+      disabled={saving || !email}
+      className="px-4 py-2 text-sm rounded-lg font-semibold disabled:opacity-50 transition"
+      style={{ background: 'hsl(142, 71%, 45%)', color: 'hsl(222, 47%, 11%)' }}
+    >
+      {saving ? 'Envoi...' : 'Inviter'}
+    </button>
+  </div>
+</div>
 
       {/* Liste */}
       {loading ? (
