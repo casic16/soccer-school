@@ -1,112 +1,172 @@
 import { useStats } from '../../hooks/useStats'
 import { useTranslation } from 'react-i18next'
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Cell, PieChart, Pie, Legend
+} from 'recharts'
 
-const statusColor = {
-  confirmed: 'bg-green-500',
-  absent: 'bg-red-400',
-  maybe: 'bg-yellow-400',
-  pending: 'bg-gray-300',
-}
+const MARINE = 'hsl(222, 47%, 11%)'
+const EMERALD = 'hsl(142, 71%, 45%)'
 
-function ProgressBar({ confirmed, absent, maybe, pending, total }) {
-  if (total === 0) return null
-  return (
-    <div className="flex h-2 rounded-full overflow-hidden w-full">
-      <div className="bg-green-500" style={{ width: `${(confirmed / total) * 100}%` }} />
-      <div className="bg-red-400" style={{ width: `${(absent / total) * 100}%` }} />
-      <div className="bg-yellow-400" style={{ width: `${(maybe / total) * 100}%` }} />
-      <div className="bg-gray-300" style={{ width: `${(pending / total) * 100}%` }} />
-    </div>
-  )
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white border rounded-lg p-3 shadow-lg text-xs" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+        <p className="font-bold mb-1" style={{ color: MARINE }}>{label}</p>
+        {payload.map((p, i) => (
+          <p key={i} style={{ color: p.color }}>{p.name} : {p.value}</p>
+        ))}
+      </div>
+    )
+  }
+  return null
 }
 
 export default function AttendanceStats({ teamId = null }) {
   const { t } = useTranslation()
   const { stats, loading } = useStats(teamId)
 
-  if (loading) return <p className="text-gray-500">{t('common.loading')}</p>
+  if (loading) return (
+    <div className="space-y-3">
+      {[1,2,3].map(i => <div key={i} className="h-12 bg-gray-100 rounded-xl animate-pulse" />)}
+    </div>
+  )
 
   const { summary, byPlayer, byEvent } = stats
 
+  const pieData = [
+    { name: 'Présents', value: summary.confirmed, color: EMERALD },
+    { name: 'Absents', value: summary.absent, color: '#ef4444' },
+    { name: 'Peut-être', value: summary.maybe, color: '#f59e0b' },
+    { name: 'En attente', value: summary.pending, color: '#e2e8f0' },
+  ].filter(d => d.value > 0)
+
+  const barData = byPlayer.slice(0, 10).map(p => ({
+    name: p.name.split(' ').slice(-1)[0],
+    fullName: p.name,
+    confirmed: p.confirmed,
+    absent: p.absent,
+    maybe: p.maybe,
+    taux: p.total > 0 ? Math.round((p.confirmed / p.total) * 100) : 0,
+  }))
+
+  const totalRate = summary.total > 0
+    ? Math.round((summary.confirmed / summary.total) * 100)
+    : 0
+
   return (
-    <div className="space-y-8">
-      {/* Résumé global */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-          <p className="text-2xl font-bold text-green-600">{summary.confirmed}</p>
-          <p className="text-xs text-gray-500 mt-1">Présents</p>
+    <div className="space-y-4">
+
+      {/* KPIs */}
+      <div className="grid grid-cols-5 gap-3">
+        {[
+          { label: 'Total', value: summary.total, color: MARINE },
+          { label: 'Présents', value: summary.confirmed, color: EMERALD },
+          { label: 'Absents', value: summary.absent, color: '#ef4444' },
+          { label: 'Peut-être', value: summary.maybe, color: '#f59e0b' },
+          { label: 'Taux global', value: `${totalRate}%`, color: totalRate >= 75 ? EMERALD : '#f59e0b' },
+        ].map((kpi) => (
+          <div key={kpi.label} className="bg-white rounded-xl p-4 border" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{kpi.label}</p>
+            <p className="font-heading font-extrabold text-2xl" style={{ color: kpi.color }}>{kpi.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Graphiques */}
+      <div className="grid grid-cols-3 gap-4">
+
+        {/* Bar chart joueurs */}
+        <div className="col-span-2 bg-white rounded-xl border p-4" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Présences par joueur (top 10)</p>
+          {barData.length === 0 ? (
+            <p className="text-sm text-slate-400 text-center py-8">Aucune donnée</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={barData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 32%, 91%)" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="confirmed" name="Présents" fill={EMERALD} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="absent" name="Absents" fill="#ef4444" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="maybe" name="Peut-être" fill="#f59e0b" radius={[3, 3, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-          <p className="text-2xl font-bold text-red-500">{summary.absent}</p>
-          <p className="text-xs text-gray-500 mt-1">Absents</p>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-          <p className="text-2xl font-bold text-yellow-500">{summary.maybe}</p>
-          <p className="text-xs text-gray-500 mt-1">Peut-être</p>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-          <p className="text-2xl font-bold text-gray-400">{summary.pending}</p>
-          <p className="text-xs text-gray-500 mt-1">En attente</p>
+
+        {/* Pie chart */}
+        <div className="bg-white rounded-xl border p-4" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Répartition globale</p>
+          {pieData.length === 0 ? (
+            <p className="text-sm text-slate-400 text-center py-8">Aucune donnée</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={80}
+                  paddingAngle={3}
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={index} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value, name) => [value, name]} />
+                <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '11px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
 
-      {/* Stats par joueur */}
-      <div>
-        <h3 className="text-lg font-bold text-gray-700 mb-3">Présences par joueur</h3>
+      {/* Tableau joueurs */}
+      <div className="bg-white rounded-xl border overflow-hidden" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+        <div className="px-4 py-3 border-b" style={{ borderColor: 'hsl(214, 32%, 91%)', background: 'hsl(210, 40%, 98%)' }}>
+          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: MARINE }}>Détail par joueur</p>
+        </div>
         {byPlayer.length === 0 ? (
-          <p className="text-gray-500 text-sm">Aucune donnée.</p>
+          <p className="text-sm text-slate-400 text-center py-8">Aucune donnée disponible</p>
         ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="text-left px-4 py-3 text-gray-600 font-medium">Joueur</th>
-                  <th className="text-center px-3 py-3 text-green-600 font-medium">✓</th>
-                  <th className="text-center px-3 py-3 text-red-500 font-medium">✗</th>
-                  <th className="text-center px-3 py-3 text-yellow-500 font-medium">?</th>
-                  <th className="text-left px-4 py-3 text-gray-600 font-medium w-32">Taux</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {byPlayer.map((p) => (
-                  <tr key={p.name} className="hover:bg-gray-50 transition">
-                    <td className="px-4 py-3 font-medium text-gray-800">{p.name}</td>
-                    <td className="px-3 py-3 text-center text-green-600 font-medium">{p.confirmed}</td>
-                    <td className="px-3 py-3 text-center text-red-500 font-medium">{p.absent}</td>
-                    <td className="px-3 py-3 text-center text-yellow-500 font-medium">{p.maybe}</td>
-                    <td className="px-4 py-3">
-                      <ProgressBar {...p} />
-                      <p className="text-xs text-gray-400 mt-1">
-                        {p.total > 0 ? Math.round((p.confirmed / p.total) * 100) : 0}%
-                      </p>
+          <table className="w-full text-xs">
+            <thead style={{ background: 'hsl(210, 40%, 98%)', borderBottom: '0.5px solid hsl(214, 32%, 91%)' }}>
+              <tr>
+                {['Joueur', '✓ Présents', '✗ Absents', '? Peut-être', 'Taux'].map(h => (
+                  <th key={h} className="text-left px-4 py-2 font-bold uppercase tracking-wider text-slate-400">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
+              {byPlayer.map((p) => {
+                const rate = p.total > 0 ? Math.round((p.confirmed / p.total) * 100) : 0
+                const isGood = rate >= 75
+                return (
+                  <tr key={p.name} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-2.5 font-semibold" style={{ color: MARINE }}>{p.name}</td>
+                    <td className="px-4 py-2.5 font-bold" style={{ color: EMERALD }}>{p.confirmed}</td>
+                    <td className="px-4 py-2.5 font-bold text-red-500">{p.absent}</td>
+                    <td className="px-4 py-2.5 font-bold text-amber-500">{p.maybe}</td>
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-20 h-1.5 rounded-full bg-slate-100">
+                          <div className="h-1.5 rounded-full" style={{ width: `${rate}%`, background: isGood ? EMERALD : '#f59e0b' }} />
+                        </div>
+                        <span className="font-bold w-8" style={{ color: isGood ? 'hsl(142, 71%, 35%)' : '#b45309' }}>{rate}%</span>
+                      </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                )
+              })}
+            </tbody>
+          </table>
         )}
       </div>
 
-      {/* Stats par événement */}
-      <div>
-        <h3 className="text-lg font-bold text-gray-700 mb-3">Présences par événement</h3>
-        {byEvent.length === 0 ? (
-          <p className="text-gray-500 text-sm">Aucune donnée.</p>
-        ) : (
-          <div className="space-y-3">
-            {byEvent.map((e) => (
-              <div key={e.title} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-sm font-medium text-gray-800">{e.title}</p>
-                  <p className="text-xs text-gray-400">{e.confirmed}/{e.total} présents</p>
-                </div>
-                <ProgressBar {...e} />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   )
 }
