@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router'
 import { useAuthStore } from '../../src/stores/authStore'
 import { router } from 'expo-router'
 import { Text, View } from 'react-native'
+import { usePushNotifications } from '../../src/hooks/usePushNotifications'
 
 const MARINE = '#0d1b3e'
 const EMERALD = '#22c55e'
@@ -32,7 +33,7 @@ export default function AppLayout() {
   }, [user, loading])
 
   if (loading) return null
-
+usePushNotifications()
   return (
     <Tabs
       screenOptions={{

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "320820194411",
+    "project_id": "fariki-bd940",
+    "storage_bucket": "fariki-bd940.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320820194411:android:34086f869ed0de2ba8552e",
+        "android_client_info": {
+          "package_name": "com.fariki.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkMfAwbifDkpodYQO_W7WQzWdR4H330JU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
