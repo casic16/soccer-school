@@ -10,14 +10,16 @@ const EMERALD = '#22c55e'
 
 function TabIcon({ emoji, focused }) {
   return (
-    <View style={{
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: 40,
-      height: 40,
-      borderRadius: 10,
-      backgroundColor: focused ? 'rgba(34,197,94,0.12)' : 'transparent',
-    }}>
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+        backgroundColor: focused ? 'rgba(34,197,94,0.12)' : 'transparent',
+      }}
+    >
       <Text style={{ fontSize: focused ? 22 : 20 }}>{emoji}</Text>
     </View>
   )
@@ -26,6 +28,9 @@ function TabIcon({ emoji, focused }) {
 export default function AppLayout() {
   const { user, loading } = useAuthStore()
 
+  // Toujours appeler les hooks avant tout return conditionnel
+  usePushNotifications()
+
   useEffect(() => {
     if (!loading && !user) {
       router.replace('/(auth)/login')
@@ -33,7 +38,7 @@ export default function AppLayout() {
   }, [user, loading])
 
   if (loading) return null
-usePushNotifications()
+
   return (
     <Tabs
       screenOptions={{
@@ -59,38 +64,56 @@ usePushNotifications()
         name="dashboard"
         options={{
           title: 'Accueil',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="🏠" focused={focused} />
+          ),
         }}
       />
+
       <Tabs.Screen
         name="events"
         options={{
           title: 'Événements',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="📅" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="📅" focused={focused} />
+          ),
         }}
       />
+
       <Tabs.Screen
         name="availability"
         options={{
           title: 'Présences',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="✅" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="✅" focused={focused} />
+          ),
         }}
       />
+
       <Tabs.Screen
         name="notifications"
         options={{
           title: 'Notifs',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🔔" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="🔔" focused={focused} />
+          ),
         }}
       />
+
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profil',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="👤" focused={focused} />
+          ),
         }}
       />
-      <Tabs.Screen name="teams" options={{ href: null }} />
+
+      <Tabs.Screen
+        name="teams"
+        options={{ href: null }}
+      />
     </Tabs>
   )
 }
