@@ -14,7 +14,10 @@
     "scheme": "fariki",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.fariki.app"
+      "bundleIdentifier": "com.fariki.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +39,15 @@
           "color": "#22c55e",
           "sounds": []
         }
-      ]
-    ]
+      ],
+      "expo-status-bar"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ac0d460f-d256-4528-88cb-f7626cfd7769"
+      }
+    },
+    "owner": "casic16"
   }
 }

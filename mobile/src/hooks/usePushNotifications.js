@@ -4,6 +4,7 @@ import * as Device from 'expo-device'
 import { Platform } from 'react-native'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
+import Constants from 'expo-constants'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -16,30 +17,37 @@ Notifications.setNotificationHandler({
 export const usePushNotifications = () => {
   const { profile } = useAuthStore()
   const [expoPushToken, setExpoPushToken] = useState(null)
-  const notificationListener = useRef()
-  const responseListener = useRef()
+
+  const notificationListener = useRef(null)
+  const responseListener = useRef(null)
 
   useEffect(() => {
     if (!profile) return
 
-    registerForPushNotifications().then(token => {
-      if (token) {
-        setExpoPushToken(token)
-        savePushToken(token, profile.id)
-      }
-    })
+    registerForPushNotifications()
+      .then((token) => {
+        if (token) {
+          setExpoPushToken(token)
+          savePushToken(token, profile.id)
+        }
+      })
+      .catch((error) => {
+        console.error('Erreur push notifications:', error)
+      })
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification reçue:', notification)
-    })
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log('Notification reçue:', notification)
+      })
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification cliquée:', response)
-    })
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log('Notification cliquée:', response)
+      })
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current)
-      Notifications.removeNotificationSubscription(responseListener.current)
+      notificationListener.current?.remove?.()
+      responseListener.current?.remove?.()
     }
   }, [profile])
 
@@ -52,11 +60,15 @@ async function registerForPushNotifications() {
     return null
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync()
+  const { status: existingStatus } =
+    await Notifications.getPermissionsAsync()
+
   let finalStatus = existingStatus
 
   if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync()
+    const { status } =
+      await Notifications.requestPermissionsAsync()
+
     finalStatus = status
   }
 
@@ -74,16 +86,45 @@ async function registerForPushNotifications() {
     })
   }
 
-  const token = await Notifications.getExpoPushTokenAsync({
-    projectId: 'fariki',
-  })
+  const projectId =
+    Constants.easConfig?.projectId ??
+    Constants.expoConfig?.extra?.eas?.projectId
 
-  return token.data
+  if (!projectId) {
+    console.error('EAS projectId introuvable')
+    return null
+  }
+
+  try {
+    const token = await Notifications.getExpoPushTokenAsync({
+      projectId,
+    })
+
+    console.log('Expo Push Token:', token.data)
+
+    return token.data
+  } catch (error) {
+    console.error(
+      'Erreur lors de la récupération du Expo Push Token:',
+      error
+    )
+
+    return null
+  }
 }
 
 async function savePushToken(token, userId) {
-  await supabase
+  const { error } = await supabase
     .from('users')
-    .update({ push_token: token })
+    .update({
+      push_token: token,
+    })
     .eq('id', userId)
-}
+
+  if (error) {
+    console.error(
+      'Erreur lors de la sauvegarde du push token:',
+      error
+    )
+  }
+}clearImmediate
