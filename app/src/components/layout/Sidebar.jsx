@@ -83,16 +83,11 @@ const allNavItems = [
 ]
 
 const roleColors = {
-  admin:
-    'text-emerald-300 bg-emerald-500/10 border-emerald-500/20',
-  coach:
-    'text-blue-300 bg-blue-500/10 border-blue-500/20',
-  parent:
-    'text-yellow-300 bg-yellow-500/10 border-yellow-500/20',
-  player:
-    'text-purple-300 bg-purple-500/10 border-purple-500/20',
-  super_admin:
-    'text-red-300 bg-red-500/10 border-red-500/20',
+  admin: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20',
+  coach: 'text-blue-300 bg-blue-500/10 border-blue-500/20',
+  parent: 'text-yellow-300 bg-yellow-500/10 border-yellow-500/20',
+  player: 'text-purple-300 bg-purple-500/10 border-purple-500/20',
+  super_admin: 'text-red-300 bg-red-500/10 border-red-500/20',
 }
 
 export default function Sidebar() {
@@ -121,7 +116,7 @@ export default function Sidebar() {
   return (
     <aside
       className="
-        w-[264px]
+        w-[252px]
         min-h-screen
         h-screen
         sticky
@@ -138,47 +133,10 @@ export default function Sidebar() {
       }}
     >
       {/* Logo */}
-      <div className="px-4 pt-4 pb-3">
+      <div className="px-5 pt-5 pb-4">
         <button
           onClick={() => navigate('/dashboard')}
-          className="
-            w-full
-            h-[64px]
-            bg-white
-            rounded-2xl
-            px-4
-            py-2
-            flex
-            items-center
-            justify-center
-            shadow-sm
-            transition
-            hover:scale-[1.01]
-          "
-        >
-          <img
-            src="/Logo.png"
-            alt="Fariki"
-            className="w-full h-full object-contain"
-          />
-        </button>
-      </div>
-
-      {/* Profil */}
-      <div className="px-3 pb-4">
-        <button
-          onClick={() => navigate('/profile')}
-          className="
-            w-full
-            flex
-            items-center
-            gap-3
-            p-3
-            rounded-xl
-            text-left
-            transition-all
-            hover:bg-white/[0.05]
-          "
+          className="flex items-center gap-3 group"
         >
           <div
             className="
@@ -188,8 +146,57 @@ export default function Sidebar() {
               flex
               items-center
               justify-center
+              bg-white
+              shadow-sm
+              overflow-hidden
+            "
+          >
+            <img
+              src="/Logo.png"
+              alt="Fariki"
+              className="w-[86px] max-w-none object-contain translate-x-[17px]"
+            />
+          </div>
+
+          <div className="text-left">
+            <p className="font-heading font-bold text-white text-[18px] leading-none">
+              Fariki
+            </p>
+            <p className="text-[10px] text-white/35 mt-1 tracking-wide">
+              Club Management
+            </p>
+          </div>
+        </button>
+      </div>
+
+      <div className="mx-4 h-px bg-white/[0.06]" />
+
+      {/* Profil */}
+      <div className="px-3 py-3">
+        <button
+          onClick={() => navigate('/profile')}
+          className="
+            w-full
+            flex
+            items-center
+            gap-3
+            p-2.5
+            rounded-xl
+            text-left
+            transition-all
+            hover:bg-white/[0.05]
+          "
+        >
+          <div
+            className="
+              w-9
+              h-9
+              rounded-xl
+              flex
+              items-center
+              justify-center
               flex-shrink-0
-              text-sm
+              text-xs
               font-bold
             "
             style={{
@@ -201,7 +208,7 @@ export default function Sidebar() {
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-white truncate">
+            <p className="text-[13px] font-semibold text-white truncate">
               {displayName}
             </p>
 
@@ -210,9 +217,9 @@ export default function Sidebar() {
                 inline-flex
                 items-center
                 mt-1
-                text-[10px]
+                text-[9px]
                 font-semibold
-                px-2
+                px-1.5
                 py-0.5
                 rounded-md
                 border
@@ -233,14 +240,29 @@ export default function Sidebar() {
       <div className="mx-4 h-px bg-white/[0.06]" />
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-6">
+      <nav
+        className="
+          flex-1
+          overflow-y-auto
+          px-3
+          py-4
+          space-y-5
+          scrollbar-thin
+          scrollbar-thumb-white/10
+          scrollbar-track-transparent
+        "
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(255,255,255,0.08) transparent',
+        }}
+      >
         {visibleSections.map((section) => (
           <div key={section.section}>
             <p
               className="
                 px-3
-                mb-2
-                text-[10px]
+                mb-1.5
+                text-[9px]
                 font-bold
                 text-white/25
                 uppercase
@@ -250,7 +272,7 @@ export default function Sidebar() {
               {section.section}
             </p>
 
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {section.items.map((item) => (
                 <NavLink
                   key={item.path}
@@ -262,10 +284,10 @@ export default function Sidebar() {
                       flex
                       items-center
                       gap-3
-                      min-h-[42px]
+                      min-h-[38px]
                       px-3
                       rounded-xl
-                      text-[13px]
+                      text-[12px]
                       font-medium
                       transition-all
                       duration-150
@@ -313,9 +335,7 @@ export default function Sidebar() {
                         {item.icon}
                       </span>
 
-                      <span className="flex-1">
-                        {item.label}
-                      </span>
+                      <span className="flex-1">{item.label}</span>
                     </>
                   )}
                 </NavLink>
@@ -334,10 +354,10 @@ export default function Sidebar() {
             flex
             items-center
             gap-3
-            min-h-[42px]
+            min-h-[38px]
             px-3
             rounded-xl
-            text-[13px]
+            text-[12px]
             font-medium
             text-white/40
             transition
@@ -345,15 +365,7 @@ export default function Sidebar() {
             hover:text-red-300
           "
         >
-          <span
-            className="
-              w-6
-              h-6
-              flex
-              items-center
-              justify-center
-            "
-          >
+          <span className="w-6 h-6 flex items-center justify-center">
             ↪
           </span>
 
