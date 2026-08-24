@@ -1,7 +1,6 @@
-import { useTranslation } from 'react-i18next'
 import { useTeams } from '../../hooks/useTeams'
 import { useEvents } from '../../hooks/useEvents'
-import { useAvailabilities } from '../../hooks/useAvailabilities'
+import { useTeamAttendanceStats } from '../../hooks/useTeamAttendanceStats'
 import { useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -23,31 +22,32 @@ import {
 const MARINE = '#0d1b3e'
 
 export default function AdminDashboard() {
-  const { t } = useTranslation()
   const { profile } = useAuthStore()
   const theme = getRoleTheme(profile?.role)
 
-  const { teams, loading: teamsLoading } = useTeams()
-  const { events, loading: eventsLoading } = useEvents()
-  const { availabilities } = useAvailabilities()
+  const {
+    teams,
+    loading: teamsLoading,
+  } = useTeams()
+
+  const {
+    events,
+    loading: eventsLoading,
+  } = useEvents()
+
+  const {
+    teamStats,
+    globalStats,
+    loading: statsLoading,
+  } = useTeamAttendanceStats()
 
   const navigate = useNavigate()
 
   const totalPlayers = teams.reduce(
-    (acc, team) => acc + (team.players?.[0]?.count || 0),
+    (acc, team) =>
+      acc + (team.players?.[0]?.count || 0),
     0
   )
-
-  const confirmedCount = availabilities.filter(
-    (availability) => availability.status === 'confirmed'
-  ).length
-
-  const attendanceRate =
-    totalPlayers > 0
-      ? Math.round(
-          (confirmedCount / Math.max(totalPlayers, 1)) * 100
-        )
-      : null
 
   const kpis = [
     {
@@ -66,17 +66,20 @@ export default function AdminDashboard() {
     },
     {
       label: 'Présences att.',
-      value: availabilities.length,
+      value: statsLoading
+        ? '—'
+        : globalStats.pending,
       sub: 'en attente',
       icon: ClipboardCheck,
       route: '/availability',
     },
     {
       label: 'Taux présence',
-      value:
-        attendanceRate !== null
-          ? `${attendanceRate}%`
-          : '—',
+      value: statsLoading
+        ? '—'
+        : globalStats.attendanceRate !== null
+        ? `${globalStats.attendanceRate}%`
+        : '—',
       sub: 'global',
       icon: TrendingUp,
       route: '/stats',
@@ -94,7 +97,9 @@ export default function AdminDashboard() {
           return (
             <button
               key={kpi.label}
-              onClick={() => navigate(kpi.route)}
+              onClick={() =>
+                navigate(kpi.route)
+              }
               className="
                 relative
                 overflow-hidden
@@ -112,21 +117,30 @@ export default function AdminDashboard() {
                 group
               "
             >
-              {/* Accent lié au rôle */}
               <div
-                className="absolute left-0 top-0 bottom-0 w-1"
-                style={{ background: theme.accent }}
+                className="
+                  absolute
+                  left-0
+                  top-0
+                  bottom-0
+                  w-1
+                "
+                style={{
+                  background: theme.accent,
+                }}
               />
 
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="
-                    text-[11px]
-                    font-bold
-                    uppercase
-                    tracking-[0.12em]
-                    text-slate-400
-                  ">
+                  <p
+                    className="
+                      text-[11px]
+                      font-bold
+                      uppercase
+                      tracking-[0.12em]
+                      text-slate-400
+                    "
+                  >
                     {kpi.label}
                   </p>
 
@@ -138,7 +152,9 @@ export default function AdminDashboard() {
                       leading-none
                       mt-3
                     "
-                    style={{ color: MARINE }}
+                    style={{
+                      color: MARINE,
+                    }}
                   >
                     {kpi.value}
                   </p>
@@ -159,11 +175,16 @@ export default function AdminDashboard() {
                     flex-shrink-0
                   "
                   style={{
-                    background: theme.accentSoft,
-                    color: theme.accent,
+                    background:
+                      theme.accentSoft,
+                    color:
+                      theme.accent,
                   }}
                 >
-                  <Icon size={21} strokeWidth={1.8} />
+                  <Icon
+                    size={21}
+                    strokeWidth={1.8}
+                  />
                 </div>
               </div>
 
@@ -179,7 +200,9 @@ export default function AdminDashboard() {
                   group-hover:opacity-100
                   transition-opacity
                 "
-                style={{ color: theme.accent }}
+                style={{
+                  color: theme.accent,
+                }}
               >
                 Voir les détails
                 <ArrowRight size={13} />
@@ -223,7 +246,9 @@ export default function AdminDashboard() {
                   uppercase
                   tracking-[0.12em]
                 "
-                style={{ color: MARINE }}
+                style={{
+                  color: MARINE,
+                }}
               >
                 Prochains événements
               </p>
@@ -234,7 +259,9 @@ export default function AdminDashboard() {
             </div>
 
             <button
-              onClick={() => navigate('/events')}
+              onClick={() =>
+                navigate('/events')
+              }
               className="
                 flex
                 items-center
@@ -260,7 +287,9 @@ export default function AdminDashboard() {
               description="Aucun événement n'est actuellement planifié."
               action={
                 <button
-                  onClick={() => navigate('/events')}
+                  onClick={() =>
+                    navigate('/events')
+                  }
                   className="
                     text-xs
                     font-semibold
@@ -269,7 +298,8 @@ export default function AdminDashboard() {
                     rounded-lg
                   "
                   style={{
-                    background: theme.accent,
+                    background:
+                      theme.accent,
                     color: '#ffffff',
                   }}
                 >
@@ -279,95 +309,123 @@ export default function AdminDashboard() {
             />
           ) : (
             <div className="divide-y divide-slate-100">
-              {events.slice(0, 6).map((event) => {
-                const isMatch = event.type === 'match'
-                const EventIcon = isMatch ? Trophy : Dumbbell
+              {events
+                .slice(0, 6)
+                .map((event) => {
+                  const isMatch =
+                    event.type === 'match'
 
-                return (
-                  <button
-                    key={event.id}
-                    onClick={() => navigate('/events')}
-                    className="
-                      w-full
-                      flex
-                      items-center
-                      gap-3
-                      px-5
-                      py-3.5
-                      text-left
-                      hover:bg-slate-50/70
-                      transition-colors
-                    "
-                  >
-                    <div
+                  const EventIcon =
+                    isMatch
+                      ? Trophy
+                      : Dumbbell
+
+                  return (
+                    <button
+                      key={event.id}
+                      onClick={() =>
+                        navigate('/events')
+                      }
                       className="
-                        w-10
-                        h-10
-                        rounded-xl
+                        w-full
                         flex
                         items-center
-                        justify-center
-                        flex-shrink-0
+                        gap-3
+                        px-5
+                        py-3.5
+                        text-left
+                        hover:bg-slate-50/70
+                        transition-colors
                       "
-                      style={{
-                        background: isMatch
-                          ? 'rgba(59,130,246,0.08)'
-                          : theme.accentSoft,
-                        color: isMatch
-                          ? '#3b82f6'
-                          : theme.accent,
-                      }}
                     >
-                      <EventIcon
-                        size={18}
-                        strokeWidth={1.8}
-                      />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <p
+                      <div
                         className="
-                          text-[13px]
-                          font-semibold
-                          truncate
+                          w-10
+                          h-10
+                          rounded-xl
+                          flex
+                          items-center
+                          justify-center
+                          flex-shrink-0
                         "
-                        style={{ color: MARINE }}
+                        style={{
+                          background:
+                            isMatch
+                              ? 'rgba(59,130,246,0.08)'
+                              : theme.accentSoft,
+
+                          color:
+                            isMatch
+                              ? '#3b82f6'
+                              : theme.accent,
+                        }}
                       >
-                        {event.title}
-                      </p>
+                        <EventIcon
+                          size={18}
+                          strokeWidth={1.8}
+                        />
+                      </div>
 
-                      <p className="
-                        text-[11px]
-                        text-slate-400
-                        truncate
-                        mt-0.5
-                      ">
-                        {event.teams?.name || 'Équipe non définie'}
-                      </p>
-                    </div>
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className="
+                            text-[13px]
+                            font-semibold
+                            truncate
+                          "
+                          style={{
+                            color: MARINE,
+                          }}
+                        >
+                          {event.title}
+                        </p>
 
-                    <div className="text-right flex-shrink-0">
-                      <p
-                        className="text-[12px] font-semibold"
-                        style={{ color: MARINE }}
-                      >
-                        {format(
-                          new Date(event.start_at),
-                          'dd MMM',
-                          { locale: fr }
-                        )}
-                      </p>
+                        <p
+                          className="
+                            text-[11px]
+                            text-slate-400
+                            truncate
+                            mt-0.5
+                          "
+                        >
+                          {event.teams?.name ||
+                            'Équipe non définie'}
+                        </p>
+                      </div>
 
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        {format(
-                          new Date(event.start_at),
-                          'HH:mm'
-                        )}
-                      </p>
-                    </div>
-                  </button>
-                )
-              })}
+                      <div className="text-right flex-shrink-0">
+                        <p
+                          className="
+                            text-[12px]
+                            font-semibold
+                          "
+                          style={{
+                            color: MARINE,
+                          }}
+                        >
+                          {format(
+                            new Date(
+                              event.start_at
+                            ),
+                            'dd MMM',
+                            {
+                              locale: fr,
+                            }
+                          )}
+                        </p>
+
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          {format(
+                            new Date(
+                              event.start_at
+                            ),
+                            'HH:mm'
+                          )}
+                        </p>
+                      </div>
+                    </button>
+                  )
+                })}
             </div>
           )}
         </section>
@@ -403,7 +461,9 @@ export default function AdminDashboard() {
                   uppercase
                   tracking-[0.12em]
                 "
-                style={{ color: MARINE }}
+                style={{
+                  color: MARINE,
+                }}
               >
                 Équipes
               </p>
@@ -414,7 +474,9 @@ export default function AdminDashboard() {
             </div>
 
             <button
-              onClick={() => navigate('/teams')}
+              onClick={() =>
+                navigate('/teams')
+              }
               className="
                 flex
                 items-center
@@ -431,7 +493,8 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {teamsLoading ? (
+          {teamsLoading ||
+          statsLoading ? (
             <ListSkeleton rows={5} />
           ) : teams.length === 0 ? (
             <EmptyState
@@ -440,7 +503,9 @@ export default function AdminDashboard() {
               description="Créez votre première équipe pour commencer."
               action={
                 <button
-                  onClick={() => navigate('/teams')}
+                  onClick={() =>
+                    navigate('/teams')
+                  }
                   className="
                     text-xs
                     font-semibold
@@ -449,7 +514,8 @@ export default function AdminDashboard() {
                     rounded-lg
                   "
                   style={{
-                    background: theme.accent,
+                    background:
+                      theme.accent,
                     color: '#ffffff',
                   }}
                 >
@@ -468,184 +534,245 @@ export default function AdminDashboard() {
                       'Joueurs',
                       'Présence',
                       'Statut',
-                    ].map((heading) => (
-                      <th
-                        key={heading}
-                        className="
-                          text-left
-                          px-5
-                          py-3
-                          font-bold
-                          uppercase
-                          tracking-[0.08em]
-                          text-[10px]
-                          text-slate-400
-                        "
-                      >
-                        {heading}
-                      </th>
-                    ))}
+                    ].map(
+                      (heading) => (
+                        <th
+                          key={heading}
+                          className="
+                            text-left
+                            px-5
+                            py-3
+                            font-bold
+                            uppercase
+                            tracking-[0.08em]
+                            text-[10px]
+                            text-slate-400
+                          "
+                        >
+                          {heading}
+                        </th>
+                      )
+                    )}
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
-                  {teams.map((team) => {
-                    const playerCount =
-                      team.players?.[0]?.count || 0
+                  {teams.map(
+                    (team) => {
+                      const playerCount =
+                        team.players?.[0]
+                          ?.count || 0
 
-                    /*
-                     * TEMPORAIRE
-                     *
-                     * Ce Math.random() sera supprimé à l'étape suivante.
-                     * Nous calculerons le taux réel à partir des
-                     * disponibilités / présences Supabase.
-                     */
-                    const rate = Math.round(
-                      Math.random() * 40 + 60
-                    )
-
-                    const isGood = rate >= 75
-
-                    return (
-                      <tr
-                        key={team.id}
-                        onClick={() =>
-                          navigate(`/teams/${team.id}`)
+                      const stats =
+                        teamStats[
+                          team.id
+                        ] || {
+                          confirmed: 0,
+                          absent: 0,
+                          maybe: 0,
+                          pending: 0,
+                          responded: 0,
+                          attendanceRate:
+                            null,
                         }
-                        className="
-                          hover:bg-slate-50/70
-                          transition-colors
-                          cursor-pointer
-                        "
-                      >
-                        <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className="
-                                w-9
-                                h-9
-                                rounded-xl
-                                flex
-                                items-center
-                                justify-center
-                              "
-                              style={{
-                                background:
-                                  theme.accentSoft,
-                                color: theme.accent,
-                              }}
-                            >
-                              <UsersRound
-                                size={17}
-                                strokeWidth={1.8}
-                              />
-                            </div>
 
-                            <span
-                              className="
-                                font-semibold
-                                text-[12px]
-                              "
-                              style={{ color: MARINE }}
-                            >
-                              {team.name}
-                            </span>
-                          </div>
-                        </td>
+                      const rate =
+                        stats.attendanceRate
 
-                        <td className="px-5 py-3.5 text-slate-400">
-                          {team.age_group || '—'}
-                        </td>
+                      const hasRate =
+                        rate !== null
 
-                        <td
+                      const isGood =
+                        hasRate &&
+                        rate >= 75
+
+                      return (
+                        <tr
+                          key={team.id}
+                          onClick={() =>
+                            navigate(
+                              `/teams/${team.id}`
+                            )
+                          }
                           className="
-                            px-5
-                            py-3.5
-                            font-semibold
+                            hover:bg-slate-50/70
+                            transition-colors
+                            cursor-pointer
                           "
-                          style={{ color: MARINE }}
                         >
-                          {playerCount}
-                        </td>
-
-                        <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-3 min-w-[120px]">
-                            <div className="
-                              flex-1
-                              h-1.5
-                              rounded-full
-                              bg-slate-100
-                              overflow-hidden
-                            ">
+                          {/* Équipe */}
+                          <td className="px-5 py-3.5">
+                            <div className="flex items-center gap-3">
                               <div
                                 className="
-                                  h-full
-                                  rounded-full
-                                  transition-all
+                                  w-9
+                                  h-9
+                                  rounded-xl
+                                  flex
+                                  items-center
+                                  justify-center
                                 "
                                 style={{
-                                  width: `${rate}%`,
                                   background:
-                                    isGood
-                                      ? theme.accent
-                                      : '#f59e0b',
+                                    theme.accentSoft,
+
+                                  color:
+                                    theme.accent,
                                 }}
-                              />
+                              >
+                                <UsersRound
+                                  size={17}
+                                  strokeWidth={
+                                    1.8
+                                  }
+                                />
+                              </div>
+
+                              <span
+                                className="
+                                  font-semibold
+                                  text-[12px]
+                                "
+                                style={{
+                                  color:
+                                    MARINE,
+                                }}
+                              >
+                                {team.name}
+                              </span>
                             </div>
+                          </td>
 
-                            <span
-                              className="
-                                font-bold
-                                text-[11px]
-                                w-8
-                                text-right
-                              "
-                              style={{
-                                color: isGood
-                                  ? theme.accent
-                                  : '#b45309',
-                              }}
-                            >
-                              {rate}%
-                            </span>
-                          </div>
-                        </td>
+                          {/* Catégorie */}
+                          <td className="px-5 py-3.5 text-slate-400">
+                            {team.age_group ||
+                              '—'}
+                          </td>
 
-                        <td className="px-5 py-3.5">
-                          <span
+                          {/* Joueurs */}
+                          <td
                             className="
-                              inline-flex
-                              items-center
-                              px-2.5
-                              py-1
-                              rounded-full
-                              text-[10px]
-                              font-bold
+                              px-5
+                              py-3.5
+                              font-semibold
                             "
-                            style={
-                              isGood
-                                ? {
-                                    background:
-                                      theme.accentSoft,
-                                    color:
-                                      theme.accent,
-                                  }
-                                : {
-                                    background:
-                                      '#fff7ed',
-                                    color:
-                                      '#b45309',
-                                  }
-                            }
+                            style={{
+                              color:
+                                MARINE,
+                            }}
                           >
-                            {isGood
-                              ? 'Actif'
-                              : 'Attention'}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  })}
+                            {playerCount}
+                          </td>
+
+                          {/* Présence */}
+                          <td className="px-5 py-3.5">
+                            {hasRate ? (
+                              <div className="flex items-center gap-3 min-w-[120px]">
+                                <div
+                                  className="
+                                    flex-1
+                                    h-1.5
+                                    rounded-full
+                                    bg-slate-100
+                                    overflow-hidden
+                                  "
+                                >
+                                  <div
+                                    className="
+                                      h-full
+                                      rounded-full
+                                      transition-all
+                                    "
+                                    style={{
+                                      width: `${rate}%`,
+
+                                      background:
+                                        isGood
+                                          ? '#22c55e'
+                                          : '#f59e0b',
+                                    }}
+                                  />
+                                </div>
+
+                                <span
+                                  className="
+                                    font-bold
+                                    text-[11px]
+                                    w-8
+                                    text-right
+                                  "
+                                  style={{
+                                    color:
+                                      isGood
+                                        ? '#16a34a'
+                                        : '#b45309',
+                                  }}
+                                >
+                                  {rate}%
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-[11px] text-slate-400">
+                                —
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Statut */}
+                          <td className="px-5 py-3.5">
+                            {!hasRate ? (
+                              <span
+                                className="
+                                  inline-flex
+                                  items-center
+                                  px-2.5
+                                  py-1
+                                  rounded-full
+                                  text-[10px]
+                                  font-bold
+                                  bg-slate-100
+                                  text-slate-500
+                                "
+                              >
+                                Aucune donnée
+                              </span>
+                            ) : (
+                              <span
+                                className="
+                                  inline-flex
+                                  items-center
+                                  px-2.5
+                                  py-1
+                                  rounded-full
+                                  text-[10px]
+                                  font-bold
+                                "
+                                style={
+                                  isGood
+                                    ? {
+                                        background:
+                                          '#dcfce7',
+                                        color:
+                                          '#15803d',
+                                      }
+                                    : {
+                                        background:
+                                          '#fff7ed',
+                                        color:
+                                          '#b45309',
+                                      }
+                                }
+                              >
+                                {isGood
+                                  ? 'Actif'
+                                  : 'Attention'}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    }
+                  )}
                 </tbody>
               </table>
             </div>
