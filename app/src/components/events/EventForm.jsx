@@ -31,6 +31,7 @@ export default function EventForm({ onClose, onCreated }) {
   const handleTypeChange = (type) => {
     setForm((prev) => {
       const currentDefaultTitle = defaultTitles[prev.type]
+
       const shouldUpdateTitle =
         !prev.title.trim() ||
         prev.title === currentDefaultTitle
@@ -51,9 +52,7 @@ export default function EventForm({ onClose, onCreated }) {
       !form.title.trim() ||
       !form.start_at
     ) {
-      setError(
-        'Veuillez remplir les champs obligatoires.'
-      )
+      setError('Veuillez remplir les champs obligatoires.')
       return
     }
 
@@ -151,32 +150,14 @@ export default function EventForm({ onClose, onCreated }) {
 
         <div className="p-6 space-y-4">
           {error && (
-            <p
-              className="
-                text-red-500
-                text-xs
-                bg-red-50
-                p-3
-                rounded-lg
-              "
-            >
+            <p className="text-red-500 text-xs bg-red-50 p-3 rounded-lg">
               {error}
             </p>
           )}
 
           {/* Type */}
           <div>
-            <label
-              className="
-                block
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-                text-slate-400
-                mb-1.5
-              "
-            >
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
               Type
             </label>
 
@@ -185,15 +166,7 @@ export default function EventForm({ onClose, onCreated }) {
               onChange={(e) =>
                 handleTypeChange(e.target.value)
               }
-              className="
-                w-full
-                border
-                rounded-lg
-                px-3
-                py-2
-                text-sm
-                focus:outline-none
-              "
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none"
               style={{
                 borderColor: 'hsl(214, 32%, 91%)',
               }}
@@ -214,17 +187,7 @@ export default function EventForm({ onClose, onCreated }) {
 
           {/* Titre */}
           <div>
-            <label
-              className="
-                block
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-                text-slate-400
-                mb-1.5
-              "
-            >
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
               Titre *
             </label>
 
@@ -237,16 +200,7 @@ export default function EventForm({ onClose, onCreated }) {
                   title: e.target.value,
                 })
               }
-              className="
-                w-full
-                border
-                rounded-lg
-                px-3
-                py-2
-                text-sm
-                focus:outline-none
-                focus:ring-2
-              "
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
               style={{
                 borderColor: 'hsl(214, 32%, 91%)',
               }}
@@ -256,17 +210,7 @@ export default function EventForm({ onClose, onCreated }) {
 
           {/* Équipe */}
           <div>
-            <label
-              className="
-                block
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-                text-slate-400
-                mb-1.5
-              "
-            >
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
               Équipe *
             </label>
 
@@ -278,15 +222,7 @@ export default function EventForm({ onClose, onCreated }) {
                   team_id: e.target.value,
                 })
               }
-              className="
-                w-full
-                border
-                rounded-lg
-                px-3
-                py-2
-                text-sm
-                focus:outline-none
-              "
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none"
               style={{
                 borderColor: 'hsl(214, 32%, 91%)',
               }}
@@ -309,17 +245,7 @@ export default function EventForm({ onClose, onCreated }) {
           {/* Date + lieu */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label
-                className="
-                  block
-                  text-xs
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-slate-400
-                  mb-1.5
-                "
-              >
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Date et heure *
               </label>
 
@@ -332,15 +258,7 @@ export default function EventForm({ onClose, onCreated }) {
                     start_at: e.target.value,
                   })
                 }
-                className="
-                  w-full
-                  border
-                  rounded-lg
-                  px-3
-                  py-2
-                  text-sm
-                  focus:outline-none
-                "
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none"
                 style={{
                   borderColor:
                     'hsl(214, 32%, 91%)',
@@ -349,17 +267,7 @@ export default function EventForm({ onClose, onCreated }) {
             </div>
 
             <div>
-              <label
-                className="
-                  block
-                  text-xs
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-slate-400
-                  mb-1.5
-                "
-              >
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Lieu
               </label>
 
@@ -372,15 +280,7 @@ export default function EventForm({ onClose, onCreated }) {
                     location: e.target.value,
                   })
                 }
-                className="
-                  w-full
-                  border
-                  rounded-lg
-                  px-3
-                  py-2
-                  text-sm
-                  focus:outline-none
-                "
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none"
                 style={{
                   borderColor:
                     'hsl(214, 32%, 91%)',
@@ -392,17 +292,7 @@ export default function EventForm({ onClose, onCreated }) {
 
           {/* Notes */}
           <div>
-            <label
-              className="
-                block
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-                text-slate-400
-                mb-1.5
-              "
-            >
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
               Notes
             </label>
 
@@ -415,16 +305,7 @@ export default function EventForm({ onClose, onCreated }) {
                 })
               }
               rows={3}
-              className="
-                w-full
-                border
-                rounded-lg
-                px-3
-                py-2
-                text-sm
-                focus:outline-none
-                resize-none
-              "
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none resize-none"
               style={{
                 borderColor: 'hsl(214, 32%, 91%)',
               }}
@@ -451,15 +332,7 @@ export default function EventForm({ onClose, onCreated }) {
           <button
             onClick={onClose}
             type="button"
-            className="
-              px-4
-              py-2
-              text-xs
-              font-semibold
-              text-slate-500
-              hover:text-slate-700
-              transition
-            "
+            className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 transition"
           >
             {t('common.cancel')}
           </button>
@@ -467,15 +340,7 @@ export default function EventForm({ onClose, onCreated }) {
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="
-              px-4
-              py-2
-              text-xs
-              font-bold
-              rounded-lg
-              disabled:opacity-50
-              transition
-            "
+            className="px-4 py-2 text-xs font-bold rounded-lg disabled:opacity-50 transition"
             style={{
               background: EMERALD,
               color: MARINE,
