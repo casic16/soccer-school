@@ -5,6 +5,8 @@ import NotificationBell from '../notifications/NotificationBell'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../stores/authStore'
 import { useNotificationStore } from '../../stores/notificationStore'
+import { getRoleTheme } from '../../theme/roleTheme'
+import { UserRound } from 'lucide-react'
 
 const languages = [
   { code: 'fr', label: 'FR' },
@@ -17,45 +19,55 @@ const pageTitles = {
     title: 'Tableau de bord',
     subtitle: "Vue d'ensemble de votre club",
   },
+
   '/teams': {
     title: 'Équipes',
     subtitle: 'Gérez les équipes de votre club',
   },
+
   '/events': {
     title: 'Événements',
     subtitle: 'Matchs, entraînements et activités',
   },
+
   '/players': {
     title: 'Joueurs',
     subtitle: 'Effectif et informations des joueurs',
   },
+
   '/availability': {
     title: 'Présences',
-    subtitle: 'Suivez les disponibilités de vos joueurs',
+    subtitle: 'Suivez les disponibilités',
   },
+
   '/stats': {
     title: 'Statistiques',
-    subtitle: 'Analysez les performances de votre club',
+    subtitle: 'Analysez votre organisation',
   },
+
   '/invitations': {
     title: 'Invitations',
-    subtitle: 'Invitez les membres de votre organisation',
+    subtitle: 'Invitez de nouveaux membres',
   },
+
   '/users': {
     title: 'Utilisateurs',
     subtitle: 'Gérez les accès et les rôles',
   },
+
   '/notifications': {
     title: 'Notifications',
-    subtitle: 'Centre de notifications Fariki',
+    subtitle: 'Centre de notifications',
   },
+
   '/profile': {
     title: 'Mon profil',
-    subtitle: 'Vos informations personnelles',
+    subtitle: 'Informations personnelles',
   },
+
   '/super-admin': {
     title: 'Super Admin',
-    subtitle: 'Administration de la plateforme',
+    subtitle: 'Administration Fariki',
   },
 }
 
@@ -64,6 +76,8 @@ export default function AppLayout() {
   const { i18n } = useTranslation()
   const { init } = useNotificationStore()
   const location = useLocation()
+
+  const theme = getRoleTheme(profile?.role)
 
   useEffect(() => {
     if (profile?.id) {
@@ -92,19 +106,21 @@ export default function AppLayout() {
     <div
       className="flex min-h-screen"
       style={{
-        background: 'hsl(210, 40%, 98%)',
+        background: '#f8fafc',
+        '--role-accent': theme.accent,
       }}
     >
       <Sidebar />
 
       <div className="flex-1 flex flex-col min-w-0">
+
         {/* Header */}
         <header
           className="
-            h-[72px]
-            bg-white/95
-            backdrop-blur
+            h-[76px]
+            bg-white
             border-b
+            border-slate-100
             px-8
             flex
             items-center
@@ -113,21 +129,15 @@ export default function AppLayout() {
             top-0
             z-30
           "
-          style={{
-            borderColor: 'hsl(214, 32%, 91%)',
-          }}
         >
           <div>
             <h1
               className="
                 font-heading
                 font-bold
-                text-[17px]
-                leading-tight
+                text-lg
               "
-              style={{
-                color: 'hsl(222, 47%, 11%)',
-              }}
+              style={{ color: '#0d1b3e' }}
             >
               {currentPage.title}
             </h1>
@@ -138,17 +148,16 @@ export default function AppLayout() {
           </div>
 
           <div className="flex items-center gap-4">
+
             {/* Languages */}
             <div
               className="
                 flex
-                items-center
-                gap-1
                 bg-slate-50
-                p-1
-                rounded-xl
                 border
                 border-slate-100
+                rounded-xl
+                p-1
               "
             >
               {languages.map((lang) => (
@@ -158,32 +167,57 @@ export default function AppLayout() {
                     changeLanguage(lang.code)
                   }
                   className={`
-                    min-w-[34px]
+                    min-w-[36px]
                     px-2
                     py-1.5
-                    text-[11px]
                     rounded-lg
+                    text-[11px]
                     font-semibold
-                    transition-all
+                    transition
                     ${
                       i18n.language === lang.code
-                        ? 'bg-white text-slate-900 shadow-sm'
-                        : 'text-slate-400 hover:text-slate-600'
+                        ? 'bg-white shadow-sm'
+                        : 'text-slate-400'
                     }
                   `}
+                  style={{
+                    color:
+                      i18n.language === lang.code
+                        ? theme.accent
+                        : undefined,
+                  }}
                 >
                   {lang.label}
                 </button>
               ))}
             </div>
 
-            <div className="h-7 w-px bg-slate-100" />
+            <div className="h-8 w-px bg-slate-100" />
 
             <NotificationBell />
+
+            <button
+              className="
+                w-9
+                h-9
+                rounded-full
+                bg-slate-50
+                border
+                border-slate-100
+                flex
+                items-center
+                justify-center
+              "
+            >
+              <UserRound
+                size={20}
+                color="#0d1b3e"
+              />
+            </button>
           </div>
         </header>
 
-        {/* Main content */}
+        {/* Content */}
         <main
           className="
             flex-1
