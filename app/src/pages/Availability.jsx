@@ -4,83 +4,370 @@ import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { ListSkeleton } from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
+import { useAuthStore } from '../stores/authStore'
+import { getRoleTheme } from '../theme/roleTheme'
 
-const MARINE = 'hsl(222, 47%, 11%)'
+import {
+  Trophy,
+  Dumbbell,
+  Check,
+  HelpCircle,
+  X,
+  UserRound,
+  Clock3,
+  ClipboardCheck,
+} from 'lucide-react'
+
+const MARINE = '#0d1b3e'
 
 export default function Availability() {
   const { t } = useTranslation()
-  const { availabilities, loading, updateStatus } = useAvailabilities()
+  const { profile } = useAuthStore()
+  const theme = getRoleTheme(profile?.role)
+
+  const {
+    availabilities,
+    loading,
+    updateStatus,
+  } = useAvailabilities()
 
   return (
-    <div>
-      <p className="text-xs text-slate-400 mb-4">{availabilities.length} réponse{availabilities.length > 1 ? 's' : ''} en attente</p>
+    <div className="space-y-5">
 
-      {loading ? <ListSkeleton rows={4} /> : availabilities.length === 0 ? (
-        <EmptyState icon="✅" title="Tout est à jour !" description="Aucune présence en attente de confirmation." />
+      {/* Summary */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p
+            className="
+              text-[11px]
+              font-bold
+              uppercase
+              tracking-[0.12em]
+            "
+            style={{ color: theme.accent }}
+          >
+            Présences à confirmer
+          </p>
+
+          <p className="text-sm text-slate-500 mt-1">
+            {availabilities.length} réponse
+            {availabilities.length > 1 ? 's' : ''} en attente
+          </p>
+        </div>
+
+        <div
+          className="
+            w-11
+            h-11
+            rounded-xl
+            flex
+            items-center
+            justify-center
+          "
+          style={{
+            background: theme.accentSoft,
+            color: theme.accent,
+          }}
+        >
+          <ClipboardCheck size={21} strokeWidth={1.8} />
+        </div>
+      </div>
+
+      {loading ? (
+        <ListSkeleton rows={5} />
+      ) : availabilities.length === 0 ? (
+        <div
+          className="
+            bg-white
+            rounded-2xl
+            border
+            border-slate-100
+            shadow-sm
+            min-h-[360px]
+            flex
+            items-center
+            justify-center
+          "
+        >
+          <EmptyState
+            icon="✅"
+            title="Tout est à jour !"
+            description="Aucune présence en attente de confirmation."
+          />
+        </div>
       ) : (
-        <div className="bg-white rounded-xl border overflow-hidden" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
-          <table className="w-full text-sm">
-            <thead style={{ background: 'hsl(210, 40%, 98%)', borderBottom: '0.5px solid hsl(214, 32%, 91%)' }}>
-              <tr>
-                {['Événement', 'Joueur', 'Date', 'Action'].map(h => (
-                  <th key={h} className="text-left px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-400">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y" style={{ borderColor: 'hsl(214, 32%, 91%)' }}>
-              {availabilities.map((a) => (
-                <tr key={a.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${a.events?.type === 'match' ? 'bg-blue-50' : 'bg-green-50'}`}>
-                        {a.events?.type === 'match' ? '⚽' : '🏃'}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-xs" style={{ color: MARINE }}>{a.events?.title}</p>
-                        <p className="text-xs text-slate-400">{a.events?.type === 'match' ? 'Match' : 'Entraînement'}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold" style={{ background: 'hsl(142, 71%, 92%)', color: 'hsl(142, 71%, 25%)' }}>
-                        {a.players?.full_name?.[0]?.toUpperCase()}
-                      </div>
-                      <span className="text-xs font-medium" style={{ color: MARINE }}>{a.players?.full_name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-slate-400">
-                    {a.events?.start_at && format(new Date(a.events.start_at), 'dd MMM à HH:mm', { locale: fr })}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1.5">
-                      <button
-                        onClick={() => updateStatus(a.id, 'confirmed')}
-                        className="px-2.5 py-1 rounded-md text-xs font-bold transition-all"
-                        style={{ background: 'hsl(142, 71%, 92%)', color: 'hsl(142, 71%, 25%)' }}
-                      >
-                        ✓ Présent
-                      </button>
-                      <button
-                        onClick={() => updateStatus(a.id, 'maybe')}
-                        className="px-2.5 py-1 rounded-md text-xs font-bold transition-all"
-                        style={{ background: 'hsl(38, 92%, 92%)', color: 'hsl(38, 92%, 30%)' }}
-                      >
-                        ? Peut-être
-                      </button>
-                      <button
-                        onClick={() => updateStatus(a.id, 'absent')}
-                        className="px-2.5 py-1 rounded-md text-xs font-bold transition-all"
-                        style={{ background: 'hsl(0, 72%, 93%)', color: 'hsl(0, 72%, 35%)' }}
-                      >
-                        ✗ Absent
-                      </button>
-                    </div>
-                  </td>
+        <div
+          className="
+            bg-white
+            rounded-2xl
+            border
+            border-slate-100
+            shadow-sm
+            overflow-hidden
+          "
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+
+              {/* Header */}
+              <thead className="bg-slate-50/70">
+                <tr>
+                  {[
+                    'Événement',
+                    'Joueur',
+                    'Date',
+                    'Action',
+                  ].map((heading) => (
+                    <th
+                      key={heading}
+                      className="
+                        text-left
+                        px-5
+                        py-3
+                        text-[10px]
+                        font-bold
+                        uppercase
+                        tracking-[0.08em]
+                        text-slate-400
+                      "
+                    >
+                      {heading}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              {/* Body */}
+              <tbody className="divide-y divide-slate-100">
+                {availabilities.map((availability) => {
+                  const isMatch =
+                    availability.events?.type === 'match'
+
+                  const EventIcon =
+                    isMatch
+                      ? Trophy
+                      : Dumbbell
+
+                  const playerInitial =
+                    availability.players?.full_name?.[0]?.toUpperCase() || '?'
+
+                  return (
+                    <tr
+                      key={availability.id}
+                      className="
+                        hover:bg-slate-50/70
+                        transition-colors
+                      "
+                    >
+
+                      {/* Event */}
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="
+                              w-10
+                              h-10
+                              rounded-xl
+                              flex
+                              items-center
+                              justify-center
+                              flex-shrink-0
+                            "
+                            style={{
+                              background:
+                                isMatch
+                                  ? 'rgba(59,130,246,0.08)'
+                                  : theme.accentSoft,
+                              color:
+                                isMatch
+                                  ? '#3b82f6'
+                                  : theme.accent,
+                            }}
+                          >
+                            <EventIcon
+                              size={18}
+                              strokeWidth={1.8}
+                            />
+                          </div>
+
+                          <div>
+                            <p
+                              className="
+                                text-[13px]
+                                font-semibold
+                              "
+                              style={{
+                                color: MARINE,
+                              }}
+                            >
+                              {availability.events?.title || 'Événement'}
+                            </p>
+
+                            <p className="text-[11px] text-slate-400 mt-0.5">
+                              {isMatch
+                                ? 'Match'
+                                : 'Entraînement'}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Player */}
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="
+                              w-9
+                              h-9
+                              rounded-xl
+                              flex
+                              items-center
+                              justify-center
+                              font-bold
+                              text-xs
+                            "
+                            style={{
+                              background: theme.accentSoft,
+                              color: theme.accent,
+                            }}
+                          >
+                            {playerInitial}
+                          </div>
+
+                          <div>
+                            <p
+                              className="
+                                text-[12px]
+                                font-semibold
+                              "
+                              style={{
+                                color: MARINE,
+                              }}
+                            >
+                              {availability.players?.full_name || 'Joueur'}
+                            </p>
+
+                            <div className="flex items-center gap-1 mt-0.5 text-[10px] text-slate-400">
+                              <UserRound size={11} />
+                              Joueur
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Date */}
+                      <td className="px-5 py-4">
+                        {availability.events?.start_at ? (
+                          <div className="flex items-center gap-2 text-slate-500">
+                            <Clock3 size={14} />
+
+                            <span className="text-[12px]">
+                              {format(
+                                new Date(
+                                  availability.events.start_at
+                                ),
+                                'dd MMM à HH:mm',
+                                { locale: fr }
+                              )}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-slate-400">—</span>
+                        )}
+                      </td>
+
+                      {/* Actions */}
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-2 flex-wrap">
+
+                          {/* Present */}
+                          <button
+                            onClick={() =>
+                              updateStatus(
+                                availability.id,
+                                'confirmed'
+                              )
+                            }
+                            className="
+                              inline-flex
+                              items-center
+                              gap-1.5
+                              px-3
+                              py-1.5
+                              rounded-lg
+                              text-[11px]
+                              font-semibold
+                              bg-emerald-50
+                              text-emerald-700
+                              hover:bg-emerald-100
+                              transition
+                            "
+                          >
+                            <Check size={13} />
+                            Présent
+                          </button>
+
+                          {/* Maybe */}
+                          <button
+                            onClick={() =>
+                              updateStatus(
+                                availability.id,
+                                'maybe'
+                              )
+                            }
+                            className="
+                              inline-flex
+                              items-center
+                              gap-1.5
+                              px-3
+                              py-1.5
+                              rounded-lg
+                              text-[11px]
+                              font-semibold
+                              bg-amber-50
+                              text-amber-700
+                              hover:bg-amber-100
+                              transition
+                            "
+                          >
+                            <HelpCircle size={13} />
+                            Peut-être
+                          </button>
+
+                          {/* Absent */}
+                          <button
+                            onClick={() =>
+                              updateStatus(
+                                availability.id,
+                                'absent'
+                              )
+                            }
+                            className="
+                              inline-flex
+                              items-center
+                              gap-1.5
+                              px-3
+                              py-1.5
+                              rounded-lg
+                              text-[11px]
+                              font-semibold
+                              bg-red-50
+                              text-red-700
+                              hover:bg-red-100
+                              transition
+                            "
+                          >
+                            <X size={13} />
+                            Absent
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
