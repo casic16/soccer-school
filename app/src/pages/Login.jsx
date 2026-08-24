@@ -57,7 +57,7 @@ export default function Login() {
       {/* Logo */}
       <div className="mb-8 relative z-10">
         <img
-          src="/Logo.png"
+          src="/fariki-logo.png"
           alt="Fariki"
           className="h-28 w-auto object-contain"
           style={{ filter: 'drop-shadow(0 0 20px rgba(220,38,38,0.4))' }}

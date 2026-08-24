@@ -77,7 +77,7 @@ export default function RegisterSchool() {
   />
   
   <div className="mb-8 relative z-10">
-    <img src="/Logo.png" alt="Fariki" className="h-24 w-auto object-contain"
+    <img src="/fariki-logo.png" alt="Fariki" className="h-24 w-auto object-contain"
       style={{ filter: 'drop-shadow(0 0 20px rgba(220,38,38,0.4))' }}
     />
   </div>
