@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useTeams } from '../../hooks/useTeams'
 import { useEvents } from '../../hooks/useEvents'
 import { useAvailabilities } from '../../hooks/useAvailabilities'
@@ -5,45 +6,46 @@ import { useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { ListSkeleton } from '../ui/Skeleton'
+import EmptyState from '../ui/EmptyState'
+import { useAuthStore } from '../../stores/authStore'
+import { getRoleTheme } from '../../theme/roleTheme'
 
-const MARINE = 'hsl(222, 47%, 11%)'
-const EMERALD = 'hsl(142, 71%, 45%)'
+import {
+  UsersRound,
+  CalendarDays,
+  ClipboardCheck,
+  TrendingUp,
+  ArrowRight,
+  Trophy,
+  Dumbbell,
+} from 'lucide-react'
+
+const MARINE = '#0d1b3e'
 
 export default function AdminDashboard() {
-  const {
-    teams,
-    loading: teamsLoading,
-  } = useTeams()
+  const { t } = useTranslation()
+  const { profile } = useAuthStore()
+  const theme = getRoleTheme(profile?.role)
 
-  const {
-    events,
-    loading: eventsLoading,
-  } = useEvents()
-
-  const {
-    availabilities,
-  } = useAvailabilities()
+  const { teams, loading: teamsLoading } = useTeams()
+  const { events, loading: eventsLoading } = useEvents()
+  const { availabilities } = useAvailabilities()
 
   const navigate = useNavigate()
 
   const totalPlayers = teams.reduce(
-    (acc, team) =>
-      acc + (team.players?.[0]?.count || 0),
+    (acc, team) => acc + (team.players?.[0]?.count || 0),
     0
   )
 
-  const confirmedCount =
-    availabilities.filter(
-      (availability) =>
-        availability.status === 'confirmed'
-    ).length
+  const confirmedCount = availabilities.filter(
+    (availability) => availability.status === 'confirmed'
+  ).length
 
-  const globalAttendance =
+  const attendanceRate =
     totalPlayers > 0
       ? Math.round(
-          (confirmedCount /
-            Math.max(totalPlayers, 1)) *
-            100
+          (confirmedCount / Math.max(totalPlayers, 1)) * 100
         )
       : null
 
@@ -52,318 +54,239 @@ export default function AdminDashboard() {
       label: 'Équipes',
       value: teams.length,
       sub: `${totalPlayers} joueurs`,
+      icon: UsersRound,
       route: '/teams',
-      accent: EMERALD,
-      icon: 'EQ',
     },
     {
       label: 'Événements',
       value: events.length,
       sub: 'à venir',
+      icon: CalendarDays,
       route: '/events',
-      accent: '#3b82f6',
-      icon: 'EV',
     },
     {
-      label: 'Présences à confirmer',
+      label: 'Présences att.',
       value: availabilities.length,
       sub: 'en attente',
+      icon: ClipboardCheck,
       route: '/availability',
-      accent: '#f59e0b',
-      icon: 'PR',
     },
     {
-      label: 'Taux de présence',
+      label: 'Taux présence',
       value:
-        globalAttendance !== null
-          ? `${globalAttendance}%`
+        attendanceRate !== null
+          ? `${attendanceRate}%`
           : '—',
       sub: 'global',
+      icon: TrendingUp,
       route: '/stats',
-      accent: EMERALD,
-      icon: '%',
     },
   ]
 
   return (
-    <div className="space-y-5">
-      {/* KPI */}
-      <div
-        className="
-          grid
-          grid-cols-1
-          sm:grid-cols-2
-          xl:grid-cols-4
-          gap-4
-        "
-      >
-        {kpis.map((kpi) => (
-          <button
-            key={kpi.label}
-            onClick={() => navigate(kpi.route)}
-            className="
-              group
-              relative
-              overflow-hidden
-              bg-white
-              rounded-2xl
-              border
-              border-slate-100
-              p-5
-              text-left
-              transition-all
-              duration-200
-              hover:-translate-y-0.5
-              hover:shadow-lg
-            "
-          >
-            <div
-              className="
-                absolute
-                top-0
-                left-0
-                right-0
-                h-[3px]
-              "
-              style={{
-                background: kpi.accent,
-              }}
-            />
+    <div className="space-y-6">
 
-            <div className="flex items-start justify-between">
-              <div>
-                <p
-                  className="
+      {/* KPI */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {kpis.map((kpi) => {
+          const Icon = kpi.icon
+
+          return (
+            <button
+              key={kpi.label}
+              onClick={() => navigate(kpi.route)}
+              className="
+                relative
+                overflow-hidden
+                bg-white
+                rounded-2xl
+                border
+                border-slate-100
+                p-5
+                text-left
+                shadow-sm
+                hover:shadow-md
+                hover:-translate-y-0.5
+                transition-all
+                duration-200
+                group
+              "
+            >
+              {/* Accent lié au rôle */}
+              <div
+                className="absolute left-0 top-0 bottom-0 w-1"
+                style={{ background: theme.accent }}
+              />
+
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="
                     text-[11px]
                     font-bold
                     uppercase
-                    tracking-[0.08em]
+                    tracking-[0.12em]
                     text-slate-400
-                  "
-                >
-                  {kpi.label}
-                </p>
+                  ">
+                    {kpi.label}
+                  </p>
 
-                <p
+                  <p
+                    className="
+                      font-heading
+                      font-extrabold
+                      text-[32px]
+                      leading-none
+                      mt-3
+                    "
+                    style={{ color: MARINE }}
+                  >
+                    {kpi.value}
+                  </p>
+
+                  <p className="text-xs text-slate-400 mt-2">
+                    {kpi.sub}
+                  </p>
+                </div>
+
+                <div
                   className="
-                    mt-3
-                    text-[34px]
-                    leading-none
-                    font-heading
-                    font-extrabold
-                    tracking-tight
+                    w-11
+                    h-11
+                    rounded-xl
+                    flex
+                    items-center
+                    justify-center
+                    flex-shrink-0
                   "
                   style={{
-                    color: MARINE,
+                    background: theme.accentSoft,
+                    color: theme.accent,
                   }}
                 >
-                  {kpi.value}
-                </p>
-
-                <p className="mt-2 text-xs text-slate-400">
-                  {kpi.sub}
-                </p>
+                  <Icon size={21} strokeWidth={1.8} />
+                </div>
               </div>
 
               <div
                 className="
-                  w-10
-                  h-10
-                  rounded-xl
                   flex
                   items-center
-                  justify-center
+                  gap-1
+                  mt-4
                   text-[11px]
-                  font-extrabold
+                  font-semibold
+                  opacity-0
+                  group-hover:opacity-100
+                  transition-opacity
                 "
-                style={{
-                  color: kpi.accent,
-                  background: `${kpi.accent}12`,
-                }}
+                style={{ color: theme.accent }}
               >
-                {kpi.icon}
+                Voir les détails
+                <ArrowRight size={13} />
               </div>
-            </div>
-
-            <div
-              className="
-                mt-5
-                flex
-                items-center
-                gap-1
-                text-xs
-                font-semibold
-                opacity-0
-                translate-y-1
-                group-hover:opacity-100
-                group-hover:translate-y-0
-                transition-all
-              "
-              style={{
-                color: kpi.accent,
-              }}
-            >
-              Voir les détails
-              <span>→</span>
-            </div>
-          </button>
-        ))}
+            </button>
+          )
+        })}
       </div>
 
-      {/* Main widgets */}
-      <div
-        className="
-          grid
-          grid-cols-1
-          xl:grid-cols-12
-          gap-5
-        "
-      >
-        {/* Upcoming events */}
+      {/* Contenu principal */}
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-5">
+
+        {/* Prochains événements */}
         <section
           className="
-            xl:col-span-5
+            xl:col-span-2
             bg-white
             rounded-2xl
             border
             border-slate-100
+            shadow-sm
             overflow-hidden
           "
         >
           <div
             className="
-              h-[60px]
-              px-5
               flex
               items-center
               justify-between
+              px-5
+              py-4
               border-b
               border-slate-100
             "
           >
             <div>
-              <h3
+              <p
                 className="
-                  text-sm
-                  font-heading
+                  text-[11px]
                   font-bold
+                  uppercase
+                  tracking-[0.12em]
                 "
-                style={{
-                  color: MARINE,
-                }}
+                style={{ color: MARINE }}
               >
                 Prochains événements
-              </h3>
+              </p>
 
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-400 mt-1">
                 Matchs et entraînements à venir
               </p>
             </div>
 
             <button
-              onClick={() =>
-                navigate('/events')
-              }
+              onClick={() => navigate('/events')}
               className="
-                text-xs
+                flex
+                items-center
+                gap-1
+                text-[11px]
                 font-semibold
                 text-slate-400
-                hover:text-emerald-600
+                hover:text-slate-600
                 transition
               "
             >
-              Voir tout →
+              Voir tout
+              <ArrowRight size={13} />
             </button>
           </div>
 
           {eventsLoading ? (
-            <ListSkeleton rows={4} />
+            <ListSkeleton rows={5} />
           ) : events.length === 0 ? (
-            <div
-              className="
-                min-h-[310px]
-                flex
-                flex-col
-                items-center
-                justify-center
-                text-center
-                px-6
-              "
-            >
-              <div
-                className="
-                  w-14
-                  h-14
-                  rounded-2xl
-                  bg-emerald-50
-                  flex
-                  items-center
-                  justify-center
-                  mb-4
-                "
-              >
-                <span className="text-2xl">
-                  ◷
-                </span>
-              </div>
-
-              <h4
-                className="
-                  font-heading
-                  font-semibold
-                  text-base
-                "
-                style={{
-                  color: MARINE,
-                }}
-              >
-                Aucun événement à venir
-              </h4>
-
-              <p
-                className="
-                  mt-1.5
-                  text-xs
-                  text-slate-400
-                  max-w-[260px]
-                "
-              >
-                Planifiez votre prochain match ou
-                entraînement.
-              </p>
-
-              <button
-                onClick={() =>
-                  navigate('/events')
-                }
-                className="
-                  mt-5
-                  px-4
-                  py-2
-                  rounded-xl
-                  text-xs
-                  font-semibold
-                  transition
-                  hover:shadow-md
-                "
-                style={{
-                  background: EMERALD,
-                  color: MARINE,
-                }}
-              >
-                + Créer un événement
-              </button>
-            </div>
+            <EmptyState
+              icon="📅"
+              title="Aucun événement"
+              description="Aucun événement n'est actuellement planifié."
+              action={
+                <button
+                  onClick={() => navigate('/events')}
+                  className="
+                    text-xs
+                    font-semibold
+                    px-3
+                    py-2
+                    rounded-lg
+                  "
+                  style={{
+                    background: theme.accent,
+                    color: '#ffffff',
+                  }}
+                >
+                  + Créer un événement
+                </button>
+              }
+            />
           ) : (
             <div className="divide-y divide-slate-100">
-              {events
-                .slice(0, 6)
-                .map((event) => (
+              {events.slice(0, 6).map((event) => {
+                const isMatch = event.type === 'match'
+                const EventIcon = isMatch ? Trophy : Dumbbell
+
+                return (
                   <button
                     key={event.id}
-                    onClick={() =>
-                      navigate('/events')
-                    }
+                    onClick={() => navigate('/events')}
                     className="
                       w-full
                       flex
@@ -372,12 +295,12 @@ export default function AdminDashboard() {
                       px-5
                       py-3.5
                       text-left
-                      hover:bg-slate-50
-                      transition
+                      hover:bg-slate-50/70
+                      transition-colors
                     "
                   >
                     <div
-                      className={`
+                      className="
                         w-10
                         h-10
                         rounded-xl
@@ -385,19 +308,20 @@ export default function AdminDashboard() {
                         items-center
                         justify-center
                         flex-shrink-0
-                        text-sm
-                        font-bold
-                        ${
-                          event.type === 'match'
-                            ? 'bg-blue-50 text-blue-500'
-                            : 'bg-emerald-50 text-emerald-600'
-                        }
-                      `}
+                      "
+                      style={{
+                        background: isMatch
+                          ? 'rgba(59,130,246,0.08)'
+                          : theme.accentSoft,
+                        color: isMatch
+                          ? '#3b82f6'
+                          : theme.accent,
+                      }}
                     >
-                      {event.type ===
-                      'match'
-                        ? 'M'
-                        : 'E'}
+                      <EventIcon
+                        size={18}
+                        strokeWidth={1.8}
+                      />
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -407,212 +331,158 @@ export default function AdminDashboard() {
                           font-semibold
                           truncate
                         "
-                        style={{
-                          color: MARINE,
-                        }}
+                        style={{ color: MARINE }}
                       >
                         {event.title}
                       </p>
 
-                      <p
-                        className="
-                          text-[11px]
-                          text-slate-400
-                          truncate
-                          mt-0.5
-                        "
-                      >
-                        {event.teams?.name ||
-                          'Toutes les équipes'}
+                      <p className="
+                        text-[11px]
+                        text-slate-400
+                        truncate
+                        mt-0.5
+                      ">
+                        {event.teams?.name || 'Équipe non définie'}
                       </p>
                     </div>
 
                     <div className="text-right flex-shrink-0">
                       <p
-                        className="
-                          text-xs
-                          font-semibold
-                        "
-                        style={{
-                          color: MARINE,
-                        }}
+                        className="text-[12px] font-semibold"
+                        style={{ color: MARINE }}
                       >
                         {format(
-                          new Date(
-                            event.start_at
-                          ),
+                          new Date(event.start_at),
                           'dd MMM',
-                          {
-                            locale: fr,
-                          }
+                          { locale: fr }
                         )}
                       </p>
 
-                      <p
-                        className="
-                          text-[11px]
-                          text-slate-400
-                          mt-0.5
-                        "
-                      >
+                      <p className="text-[11px] text-slate-400 mt-0.5">
                         {format(
-                          new Date(
-                            event.start_at
-                          ),
+                          new Date(event.start_at),
                           'HH:mm'
                         )}
                       </p>
                     </div>
                   </button>
-                ))}
+                )
+              })}
             </div>
           )}
         </section>
 
-        {/* Teams */}
+        {/* Équipes */}
         <section
           className="
-            xl:col-span-7
+            xl:col-span-3
             bg-white
             rounded-2xl
             border
             border-slate-100
+            shadow-sm
             overflow-hidden
           "
         >
           <div
             className="
-              h-[60px]
-              px-5
               flex
               items-center
               justify-between
+              px-5
+              py-4
               border-b
               border-slate-100
             "
           >
             <div>
-              <h3
+              <p
                 className="
-                  text-sm
-                  font-heading
+                  text-[11px]
                   font-bold
+                  uppercase
+                  tracking-[0.12em]
                 "
-                style={{
-                  color: MARINE,
-                }}
+                style={{ color: MARINE }}
               >
-                Vos équipes
-              </h3>
+                Équipes
+              </p>
 
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Aperçu des effectifs et présences
+              <p className="text-[11px] text-slate-400 mt-1">
+                Aperçu des équipes du club
               </p>
             </div>
 
             <button
-              onClick={() =>
-                navigate('/teams')
-              }
+              onClick={() => navigate('/teams')}
               className="
-                text-xs
+                flex
+                items-center
+                gap-1
+                text-[11px]
                 font-semibold
                 text-slate-400
-                hover:text-emerald-600
+                hover:text-slate-600
                 transition
               "
             >
-              Gérer →
+              Gérer
+              <ArrowRight size={13} />
             </button>
           </div>
 
           {teamsLoading ? (
             <ListSkeleton rows={5} />
           ) : teams.length === 0 ? (
-            <div
-              className="
-                min-h-[310px]
-                flex
-                flex-col
-                items-center
-                justify-center
-                text-center
-              "
-            >
-              <div
-                className="
-                  w-14
-                  h-14
-                  rounded-2xl
-                  bg-emerald-50
-                  flex
-                  items-center
-                  justify-center
-                  mb-4
-                  text-xl
-                "
-              >
-                ◎
-              </div>
-
-              <p
-                className="
-                  font-heading
-                  font-semibold
-                "
-                style={{
-                  color: MARINE,
-                }}
-              >
-                Aucune équipe
-              </p>
-
-              <button
-                onClick={() =>
-                  navigate('/teams')
-                }
-                className="
-                  mt-4
-                  px-4
-                  py-2
-                  rounded-xl
-                  text-xs
-                  font-semibold
-                "
-                style={{
-                  background: EMERALD,
-                  color: MARINE,
-                }}
-              >
-                + Créer une équipe
-              </button>
-            </div>
+            <EmptyState
+              icon="👥"
+              title="Aucune équipe"
+              description="Créez votre première équipe pour commencer."
+              action={
+                <button
+                  onClick={() => navigate('/teams')}
+                  className="
+                    text-xs
+                    font-semibold
+                    px-3
+                    py-2
+                    rounded-lg
+                  "
+                  style={{
+                    background: theme.accent,
+                    color: '#ffffff',
+                  }}
+                >
+                  + Créer une équipe
+                </button>
+              }
+            />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
-                <thead>
-                  <tr className="bg-slate-50/70 border-b border-slate-100">
+                <thead className="bg-slate-50/70">
+                  <tr>
                     {[
                       'Équipe',
                       'Catégorie',
                       'Joueurs',
                       'Présence',
                       'Statut',
-                    ].map((header) => (
+                    ].map((heading) => (
                       <th
-                        key={header}
+                        key={heading}
                         className="
                           text-left
                           px-5
                           py-3
-                          text-[10px]
                           font-bold
                           uppercase
                           tracking-[0.08em]
+                          text-[10px]
                           text-slate-400
                         "
                       >
-                        {header}
+                        {heading}
                       </th>
                     ))}
                   </tr>
@@ -621,34 +491,31 @@ export default function AdminDashboard() {
                 <tbody className="divide-y divide-slate-100">
                   {teams.map((team) => {
                     const playerCount =
-                      team.players?.[0]
-                        ?.count || 0
+                      team.players?.[0]?.count || 0
 
                     /*
-                     * TEMPORAIRE :
-                     * À remplacer ensuite par le vrai
-                     * taux de présence Supabase.
+                     * TEMPORAIRE
+                     *
+                     * Ce Math.random() sera supprimé à l'étape suivante.
+                     * Nous calculerons le taux réel à partir des
+                     * disponibilités / présences Supabase.
                      */
                     const rate = Math.round(
-                      Math.random() * 40 +
-                        60
+                      Math.random() * 40 + 60
                     )
 
-                    const isGood =
-                      rate >= 75
+                    const isGood = rate >= 75
 
                     return (
                       <tr
                         key={team.id}
                         onClick={() =>
-                          navigate(
-                            `/teams/${team.id}`
-                          )
+                          navigate(`/teams/${team.id}`)
                         }
                         className="
-                          cursor-pointer
                           hover:bg-slate-50/70
-                          transition
+                          transition-colors
+                          cursor-pointer
                         "
                       >
                         <td className="px-5 py-3.5">
@@ -658,39 +525,36 @@ export default function AdminDashboard() {
                                 w-9
                                 h-9
                                 rounded-xl
-                                bg-emerald-50
                                 flex
                                 items-center
                                 justify-center
-                                text-emerald-600
-                                font-bold
                               "
+                              style={{
+                                background:
+                                  theme.accentSoft,
+                                color: theme.accent,
+                              }}
                             >
-                              F
+                              <UsersRound
+                                size={17}
+                                strokeWidth={1.8}
+                              />
                             </div>
 
-                            <div>
-                              <p
-                                className="
-                                  text-[13px]
-                                  font-semibold
-                                "
-                                style={{
-                                  color: MARINE,
-                                }}
-                              >
-                                {team.name}
-                              </p>
-
-                              <p className="text-[10px] text-slate-400 mt-0.5">
-                                Saison 2026
-                              </p>
-                            </div>
+                            <span
+                              className="
+                                font-semibold
+                                text-[12px]
+                              "
+                              style={{ color: MARINE }}
+                            >
+                              {team.name}
+                            </span>
                           </div>
                         </td>
 
                         <td className="px-5 py-3.5 text-slate-400">
-                          {team.age_group}
+                          {team.age_group || '—'}
                         </td>
 
                         <td
@@ -699,34 +563,31 @@ export default function AdminDashboard() {
                             py-3.5
                             font-semibold
                           "
-                          style={{
-                            color: MARINE,
-                          }}
+                          style={{ color: MARINE }}
                         >
                           {playerCount}
                         </td>
 
-                        <td className="px-5 py-3.5 min-w-[150px]">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className="
-                                flex-1
-                                h-[5px]
-                                rounded-full
-                                bg-slate-100
-                                overflow-hidden
-                              "
-                            >
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-3 min-w-[120px]">
+                            <div className="
+                              flex-1
+                              h-1.5
+                              rounded-full
+                              bg-slate-100
+                              overflow-hidden
+                            ">
                               <div
                                 className="
                                   h-full
                                   rounded-full
+                                  transition-all
                                 "
                                 style={{
                                   width: `${rate}%`,
                                   background:
                                     isGood
-                                      ? EMERALD
+                                      ? theme.accent
                                       : '#f59e0b',
                                 }}
                               />
@@ -734,14 +595,14 @@ export default function AdminDashboard() {
 
                             <span
                               className="
+                                font-bold
+                                text-[11px]
                                 w-8
                                 text-right
-                                text-[11px]
-                                font-bold
                               "
                               style={{
                                 color: isGood
-                                  ? 'hsl(142, 71%, 35%)'
+                                  ? theme.accent
                                   : '#b45309',
                               }}
                             >
@@ -752,19 +613,30 @@ export default function AdminDashboard() {
 
                         <td className="px-5 py-3.5">
                           <span
-                            className={`
+                            className="
                               inline-flex
+                              items-center
                               px-2.5
                               py-1
-                              rounded-lg
+                              rounded-full
                               text-[10px]
                               font-bold
-                              ${
-                                isGood
-                                  ? 'bg-emerald-50 text-emerald-700'
-                                  : 'bg-amber-50 text-amber-700'
-                              }
-                            `}
+                            "
+                            style={
+                              isGood
+                                ? {
+                                    background:
+                                      theme.accentSoft,
+                                    color:
+                                      theme.accent,
+                                  }
+                                : {
+                                    background:
+                                      '#fff7ed',
+                                    color:
+                                      '#b45309',
+                                  }
+                            }
                           >
                             {isGood
                               ? 'Actif'
