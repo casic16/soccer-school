@@ -22,46 +22,63 @@ import Profile from './pages/Profile'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore()
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-500">Chargement...</p>
-    </div>
-  )
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Chargement...</p>
+      </div>
+    )
+  }
+
   return user ? children : <Navigate to="/login" />
 }
 
 export default function App() {
   const init = useAuthStore((s) => s.init)
-  useEffect(() => { init() }, [])
+
+  useEffect(() => {
+    init()
+  }, [])
 
   return (
     <BrowserRouter>
       <Routes>
+
         {/* Routes publiques */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register-school" element={<RegisterSchool />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="profile" element={<Profile />} />
 
         {/* Routes privées */}
-        <Route path="/" element={
-          <PrivateRoute>
-            <AppLayout />
-          </PrivateRoute>
-        }>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <AppLayout />
+            </PrivateRoute>
+          }
+        >
           <Route index element={<Navigate to="/dashboard" />} />
+
           <Route path="dashboard" element={<Dashboard />} />
+
           <Route path="teams" element={<Teams />} />
           <Route path="teams/:id" element={<TeamDetail />} />
+
           <Route path="events" element={<Events />} />
           <Route path="availability" element={<Availability />} />
           <Route path="players" element={<Players />} />
+
           <Route path="users" element={<Users />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="stats" element={<Stats />} />
           <Route path="invitations" element={<Invitations />} />
+
+          <Route path="profile" element={<Profile />} />
+
           <Route path="super-admin" element={<SuperAdmin />} />
         </Route>
 

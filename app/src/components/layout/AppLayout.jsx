@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import Sidebar from './Sidebar'
 import NotificationBell from '../notifications/NotificationBell'
@@ -76,6 +76,7 @@ export default function AppLayout() {
   const { i18n } = useTranslation()
   const { init } = useNotificationStore()
   const location = useLocation()
+  const navigate = useNavigate()
 
   const theme = getRoleTheme(profile?.role)
 
@@ -163,9 +164,7 @@ export default function AppLayout() {
               {languages.map((lang) => (
                 <button
                   key={lang.code}
-                  onClick={() =>
-                    changeLanguage(lang.code)
-                  }
+                  onClick={() => changeLanguage(lang.code)}
                   className={`
                     min-w-[36px]
                     px-2
@@ -196,7 +195,11 @@ export default function AppLayout() {
 
             <NotificationBell />
 
+            {/* Profil */}
             <button
+              onClick={() => navigate('/profile')}
+              title="Mon profil"
+              aria-label="Ouvrir mon profil"
               className="
                 w-9
                 h-9
@@ -207,6 +210,10 @@ export default function AppLayout() {
                 flex
                 items-center
                 justify-center
+                transition-all
+                hover:bg-white
+                hover:shadow-sm
+                hover:border-slate-200
               "
             >
               <UserRound
